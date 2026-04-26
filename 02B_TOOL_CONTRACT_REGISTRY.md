@@ -74,6 +74,22 @@ Tool Contract Registry 是横切 controller / asset「控制与资产」模块�
 - `medium`：可能影响环境状态，需要记录和回退说明
 - `high`：可能影响运行服务、数据或外部系统
 
+### 3.1 execution profile 约束
+
+`side_effect_level` 与 execution profile 的最低匹配关系如下：
+
+| side_effect_level | 最低 execution_profile | 要求 |
+|---|---|---|
+| `none` | L1 | 记录输入输出摘要与 evidence pointer |
+| `low` | L1 | 记录清理方式或临时产物位置 |
+| `medium` | L2 | 明确 rollback_hint、failure_modes 与 readback_method |
+| `high` | L3 | 明确 health_check / verification_action、rollback_hint 与 artifact_or_log_pointer |
+
+若当前 execution profile 低于工具副作用等级要求：
+- 不得直接调用工具
+- 必须先由 Execution Profile Controller 评估是否升级
+- 升级结果必须写入 Record & Evidence Module
+
 `side_effect_level = high` 的工具调用必须：
 - 使用 L3 execution profile
 - 明确 rollback_hint
@@ -101,6 +117,15 @@ Tool Contract Registry 是横切 controller / asset「控制与资产」模块�
 - `artifact_output`
 - `readback_method`
 
+### 4.1 字段收口
+
+- `input_schema` / `output_schema` 可以是 JSON Schema、表格字段清单或严格结构化 Markdown，但不得只写自然语言描述。
+- `failure_modes` 必须列出可预期失败类型；未知失败可写 `unknown`，但不得留空。
+- `rollback_hint` 对 `side_effect_level = none` 可写 `none`；对 `low` / `medium` / `high` 必须给出清理、回退或不可回退说明。
+- `evidence_output` 必须说明工具输出中哪些内容可进入 evidence pointer。
+- `artifact_output` 必须说明产物位置、命名规则或由 Runtime Adapter 生成的 pointer scheme。
+- `readback_method` 必须说明如何确认输出或产物可回读。
+
 ---
 
 ## 五、工具调用规则
@@ -109,6 +134,7 @@ Tool Contract Registry 是横切 controller / asset「控制与资产」模块�
 - 绑定 `run_uid`
 - 绑定当前 `workflow_state` 或 `module_mode`
 - 引用一个已登记 tool contract
+- 通过 Context Gate 确认调用目标、输入摘要与相关契约已装配
 - 写入调用目标与输入摘要
 - 保存输出摘要与 artifact pointer
 - 保存失败模式与退出码，如适用
@@ -186,3 +212,4 @@ Tool Contract Registry 是横切 controller / asset「控制与资产」模块�
 - 不得丢弃失败工具调用的 partial artifact
 - 不得在高副作用工具调用后跳过验证
 - 不得用自然语言描述替代 tool contract 字段
+- 不得在 execution profile 未满足最低要求时调用 `medium` / `high` 副作用工具

@@ -70,6 +70,12 @@ Runtime Adapter 是运行环境适配层，不构成新的 workflow_state「流�
 - rollout / rollback 日志
 - health gate 结果
 
+### 2.7 Adapter Boundary「适配边界」
+
+一个 adapter 只能描述当前运行环境能如何执行或回读，不得把运行环境限制上升为 Harness 全局限制。
+
+当同一 tool contract 可映射到多个 adapter 时，必须由 Tool Contract Registry 或调用模块记录选择依据。
+
 ---
 
 ## 三、能力声明
@@ -103,6 +109,39 @@ Runtime Adapter 必须输出可回读 pointer。
 
 pointer 可以是逻辑地址，不要求一定是 URL，但必须能被当前 Harness 环境回读。
 
+### 4.1 最小 pointer 字段
+
+每个 pointer 至少必须能解析出：
+- `pointer_type`
+- `pointer_value`
+- `created_at`
+- `producer_adapter_uid`
+- `readback_method`
+
+若 pointer 指向时间敏感数据，还必须记录：
+- `time_range`
+- `query_or_filter`
+- `retention_note`
+
+### 4.2 不稳定 pointer「易失指针」
+
+以下 pointer 必须标记为 unstable：
+- 临时日志窗口
+- 短保留期 trace / metric 查询
+- 临时文件
+- 需要会话态才能访问的页面或截图
+- 外部系统短期 artifact 链接
+
+unstable pointer 用于 L2 / L3 时，必须尽快固化为 stable artifact pointer，否则不得作为长期闭环证据。
+
+### 4.3 Stable Artifact Pointer「稳定产物指针」
+
+stable artifact pointer 必须满足：
+- 当前 Harness 环境可回读
+- 过期条件明确
+- 所属 run / issue 可追踪
+- 内容摘要或 checksum 可记录，如适用
+
 ---
 
 ## 五、适配规则
@@ -120,6 +159,8 @@ pointer 可以是逻辑地址，不要求一定是 URL，但必须能被当前 H
 - artifact_or_log_pointer
 - evidence_pointer
 - readback_status
+
+执行后不得只返回自然语言摘要。若 adapter 无法生成 pointer，必须记录 `pointer_unavailable_reason`，并由调用模块决定是否允许继续。
 
 ### 5.3 失败时
 必须产出：
@@ -146,6 +187,20 @@ pointer 可以是逻辑地址，不要求一定是 URL，但必须能被当前 H
 ```
 
 ```md
+## Evidence Pointer
+- pointer_type:
+- pointer_value:
+- created_at:
+- producer_adapter_uid:
+- readback_method:
+- stability:
+- time_range:
+- query_or_filter:
+- retention_note:
+- checksum:
+```
+
+```md
 ## Runtime Adapter Snapshot
 - run_uid:
 - issue_uid:
@@ -156,6 +211,7 @@ pointer 可以是逻辑地址，不要求一定是 URL，但必须能被当前 H
 - output_summary:
 - artifact_or_log_pointer:
 - evidence_pointer:
+- pointer_unavailable_reason:
 - failure_surface:
 - cleanup_hint:
 - readback_status:

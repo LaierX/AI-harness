@@ -121,12 +121,30 @@ Context Controller 是横切 controller「控制器」，不构成新的 workflo
 
 每次上下文装配完成后，必须通过 Context Gate。
 
+### 5.1 与 Record Gate 的边界
+
+Context Gate 只判断“本次调用前的上下文是否可用”，Record Gate 判断“本次步骤或模块输出是否可退出”。
+
+推荐顺序：
+1. Context Controller 装配上下文
+2. Context Gate 通过
+3. Step / module / tool call 执行
+4. 输出写入 Record & Evidence Module
+5. Record Gate 通过
+
+Context Gate 通过不等于 step 完成；Record Gate 通过也不代表上下文可在下一次调用中原样复用。
+
+### 5.2 必须满足
+
 必须同时满足：
 - 当前 objective 已明确
 - 当前 workflow_state / module_mode 已明确
 - 注入内容均有来源或 pointer
 - 过期假设已标记
 - 未验证内容已标记为 tentative「暂定」
+- memory 读取结果已标记 confidence / freshness / applicability，如适用
+- tool contract 摘要已与当前 module call 匹配，如适用
+- runtime adapter 能力摘要已与当前 tool type 匹配，如适用
 - 与当前目标无关的大段材料未全文注入
 - 上下文装配结果已写入记录
 
@@ -148,11 +166,14 @@ Context Controller 是横切 controller「控制器」，不构成新的 workflo
 - module_name:
 - module_mode:
 - objective:
+- context_source_order:
 - injected_context:
 - pointer_only_context:
 - excluded_context:
 - stale_or_tentative_items:
 - memory_conflicts:
+- tool_contract_refs:
+- runtime_adapter_refs:
 - context_gate_result:
 - readback_status:
 ```

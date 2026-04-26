@@ -111,6 +111,28 @@
 - workflow_state 不得推进
 - standalone module call 不得标记完成
 
+### 4.1 与 Context Gate 的顺序关系
+
+Context Gate 发生在模型调用、工具调用或 step 推进之前，用于确认“将要使用的上下文是否可靠”。
+
+Record Gate 发生在 step、module 或工具调用之后，用于确认“已经产生的动作、证据与结论是否可审计、可回读”。
+
+推荐顺序：
+
+```text
+Context Gate → action / tool call / module execution → Record Gate
+```
+
+若 Record Gate 发现记录缺口，不得倒填为 Context Gate 已通过；必须补齐记录并重新回读。
+
+### 4.2 横切模块的最小 evidence pointer
+
+横切模块至少应绑定以下证据：
+- Context Controller：context assembly snapshot pointer
+- Tool Contract Registry：tool contract 或 tool call snapshot pointer
+- Memory Layer：memory entry / memory read snapshot pointer
+- Runtime Adapter：runtime adapter snapshot pointer
+
 ---
 
 ## 五、记录主文档规则

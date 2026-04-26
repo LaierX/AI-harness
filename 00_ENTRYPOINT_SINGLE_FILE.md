@@ -289,8 +289,9 @@ Context Controller 是横切 controller，不构成新的 workflow_state。
 - 过期假设已标记
 - 未验证内容已标记为 tentative
 - 与当前目标无关的大段材料未全文注入
+- 上下文装配结果已写入记录并可回读
 
-Context Controller 不得推进 workflow_state，不得替代 Record Gate。
+Context Gate 是进入模型或工具调用前的入口门；Record Gate 是步骤或模块退出前的出口门。Context Controller 不得推进 workflow_state，不得替代 Record Gate。
 
 ---
 
@@ -321,6 +322,8 @@ Tool Contract Registry 是横切 controller / asset 模块，不构成新的 wor
 - `evidence_output`
 - `artifact_output`
 - `readback_method`
+
+`side_effect_level = high` 的工具调用必须使用 L3 execution profile；`medium` 及以上必须有 rollback_hint、verification_action 与 artifact_or_log_pointer。
 
 工具输出不得直接等于事实结论。事实结论必须由对应 step module 或 capability module 消化后写入 Step Snapshot。
 
@@ -463,6 +466,7 @@ memory 不是证据本身。读取 memory 时必须输出：
 - `applicability`
 
 只有对应 run 已完成 Closing、关键结论已回读、来源 pointer 明确、置信度可说明时，才允许沉淀长期 memory。
+Memory 写入只能在 Closing 完成后或 Governance 反审中发生，不得在 observing / reproducing / isolating / attributing / fixing / verifying 中直接写入长期 memory。
 
 ---
 
@@ -917,7 +921,7 @@ Runtime Adapter 是运行环境适配层，不构成新的 workflow_state。
 - Observability Adapter
 - CI / Release Adapter
 
-Runtime Adapter 必须输出可回读 pointer。它不得推进 workflow_state，不得绕过 Tool Contract Registry 执行高副作用动作。
+Runtime Adapter 必须输出可回读 pointer。pointer 至少应包含 `pointer_uri`、`pointer_type`、`created_at`、`readback_method` 与 `retention_policy`。它不得推进 workflow_state，不得绕过 Tool Contract Registry 执行高副作用动作。
 
 ---
 
@@ -1081,6 +1085,9 @@ Runtime Adapter 必须输出可回读 pointer。它不得推进 workflow_state�
 12. Tool Contract Registry 只定义契约，不执行真实工具调用。
 13. Memory Layer 只能辅助决策，不得覆盖当前证据。
 14. Runtime Adapter 只适配运行环境，不改变 Harness 状态机。
+15. Context Gate 是入口门，Record Gate 是出口门，二者不得互相替代。
+16. 长期 memory 只能从已闭环且可回读的记录中沉淀。
+17. Runtime pointer 必须可回读，并声明保留策略。
 
 ---
 

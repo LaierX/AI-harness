@@ -1,8 +1,8 @@
-# 🧠 Harness v4 模块化规范套件 v4.2.0
+# 🧠 Harness v4 模块化规范套件 v4.2.1
 
 > 目标：提供一套可由 Hermes / Agent「智能体」直接读取、装配与执行的 Harness v4 模块化规范。
 > 定位：本套件为 v4 的目录化版本；保留 workflow「流程」主线，同时把能力拆为 module「模块」与 controller「控制器」。
-> 本版更新：新增 Context Controller、Tool Contract Registry、Memory Layer 与 Runtime Adapter，补齐上下文装配、工具契约、长期记忆与运行适配边界。
+> 本版更新：收紧 Context / Tool / Memory / Runtime 横切模块边界，明确门控顺序、副作用约束、memory 写入条件与 pointer 回读口径。
 
 ---
 
@@ -81,9 +81,13 @@ Harness v4
 - `run_uid / issue_uid / rule_uid / source_issue_uid` 是业务主标识；`id` 仅用于数据库内部主键。
 - `checks.result` 与 `regression_rule_runs.result` 不共享枚举。
 - Context Controller 不推进 workflow_state；它只负责上下文装配、裁剪、恢复与防漂移。
+- Context Gate 是进入工具调用或模型决策前的前置门；Record Gate 是步骤或模块退出前的出口门。
 - Tool Contract Registry 不执行工具；它只定义工具契约、边界、产物与回读要求。
+- L2 / L3 正式工具调用必须引用 Tool Contract，并通过 Runtime Adapter 产出可回读 pointer。
 - Memory Layer 不替代 primary record db；记忆只能辅助决策，不能覆盖当前证据。
+- Memory 只能从已闭环且已回读的 run 中沉淀；读取 memory 时必须标记适用性与置信度。
 - Runtime Adapter 不改变 Harness 状态机；它只把工具契约映射到具体运行环境。
+- Runtime Adapter 输出的 pointer 必须具备可定位、可回读、可复核的最小字段。
 - `04G~04J` 为 optional capability modules；它们可以被调用，但不单独构成新的 workflow_state。
 - optional capability modules 退出前仍必须通过 Record Gate「记录出口守卫」。
 
@@ -116,6 +120,7 @@ Harness v4
 - `10_CHANGELOG_v4.1.0.md`
 - `10_CHANGELOG_v4.1.1.md`
 - `10_CHANGELOG_v4.2.0.md`
+- `10_CHANGELOG_v4.2.1.md`
 - `11_RUNTIME_ADAPTER_MODULE.md`
 
 ---
@@ -150,6 +155,7 @@ Harness v4
   10_CHANGELOG_v4.1.0.md
   10_CHANGELOG_v4.1.1.md
   10_CHANGELOG_v4.2.0.md
+  10_CHANGELOG_v4.2.1.md
   11_RUNTIME_ADAPTER_MODULE.md
 ```
 

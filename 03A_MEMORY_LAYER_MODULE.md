@@ -84,12 +84,24 @@ Regression Memory 不替代 regression rule 本体。
 ### 3.1 可写入 memory
 满足以下条件才允许写入：
 - 对应 run 已完成 Closing
+- lifecycle_state 已标记为 `closed`
 - 关键结论已回读
 - 来源 pointer 明确
+- memory 类型已明确
 - 置信度可说明
 - 废弃条件或复审条件明确
+- 与当前 regression rule / governance 资产的关系已说明，如适用
 
-### 3.2 不得写入 memory
+### 3.2 写入触发点
+
+长期 memory 只能在以下触发点写入：
+- Closing Module 完成后
+- Governance Module 反审确认后
+- Regression Executor 产生稳定的长期结果后
+
+在 Observing / Reproducing / Isolating / Attributing / Fixing / Verifying 过程中，只允许写入临时 note 或 Step Snapshot，不得直接写入长期 memory。
+
+### 3.3 不得写入 memory
 以下内容不得沉淀为长期 memory：
 - 未验证假设
 - 临时猜测
@@ -104,16 +116,22 @@ Regression Memory 不替代 regression rule 本体。
 读取 memory 时必须输出：
 - memory_uid
 - memory_type
+- status
 - source_run_uid
 - source_issue_uid
 - source_pointer
 - confidence
 - freshness
 - applicability
+- decision_impact
 
 若 memory 仅为低置信参考：
 - 必须标记为 tentative
 - 不得进入当前结论字段
+
+若 memory 状态为 `needs_review` 或 `deprecated`：
+- 默认不得注入为 active context
+- 如必须引用，只能作为历史冲突或反审材料使用
 
 ---
 
@@ -134,6 +152,20 @@ memory status「记忆状态」建议使用：
 - `tentative`
 - `needs_review`
 - `deprecated`
+
+### 6.1 置信度口径
+
+memory confidence「记忆置信度」建议使用：
+- `high`：来自已闭环 run，且有多证据支撑
+- `medium`：来自已闭环 run，但适用范围有限
+- `low`：仅可作为参考，必须标记 tentative
+
+### 6.2 新鲜度口径
+
+memory freshness「记忆新鲜度」建议使用：
+- `current`：仍与当前系统状态一致
+- `aging`：可能受版本、配置或环境变化影响
+- `stale`：已过期或必须复审
 
 ---
 

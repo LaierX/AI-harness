@@ -87,6 +87,8 @@ Tool Contract Registry 不直接执行工具。
 - `04G~04J` 退出前仍必须通过 Record Gate。
 - Context Controller / Tool Contract Registry / Memory Layer / Runtime Adapter 不单独代表新的 workflow_state。
 - 正式 L2 / L3 工具调用必须引用 Tool Contract，并产出可回读 evidence pointer。
+- 工具调用前必须完成 Context Gate；工具调用后必须完成 Tool Call Snapshot 与 Record Gate。
+- Runtime Adapter 失败只能作为运行环境证据，不得直接写成 Target System 根因。
 
 ### 3.1 module_mode「模块调用模式」
 允许：
@@ -114,6 +116,26 @@ Tool Contract Registry 不直接执行工具。
 - 当前步或当前模块核心结论已写
 - Record Gate 已通过
 - 下一步或回退方向已明确
+
+### 4.1 横切模块退出顺序
+
+涉及工具或环境适配的调用，推荐顺序为：
+
+```text
+Context Gate
+→ Tool Contract lookup
+→ Runtime Adapter execution
+→ Tool Call / Adapter Snapshot
+→ Record Gate
+→ Step Orchestrator decision
+```
+
+说明：
+- Context Gate 负责确认“模型看到什么”。
+- Tool Contract Registry 负责确认“工具应该怎么被调用”。
+- Runtime Adapter 负责确认“运行环境实际发生了什么”。
+- Record Gate 负责确认“发生的事是否已写入并可回读”。
+- Step Orchestrator 只在以上结果满足后决定是否推进 workflow_state。
 
 ---
 

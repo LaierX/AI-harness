@@ -165,6 +165,7 @@
 - excluded_context:
 - stale_or_tentative_items:
 - memory_conflicts:
+- gate_sequence:
 - context_gate_result:
 - readback_status:
 ```
@@ -182,6 +183,7 @@
 - input_schema:
 - output_schema:
 - side_effect_level:
+- minimum_execution_profile:
 - timeout_policy:
 - retry_policy:
 - failure_modes:
@@ -207,9 +209,12 @@
 - input_summary:
 - output_summary:
 - side_effect_level:
+- profile_check_result:
+- context_gate_result:
 - artifact_or_log_pointer:
 - evidence_pointer:
 - failure_type:
+- exit_code:
 - retry_count:
 - decision:
 - readback_status:
@@ -232,6 +237,8 @@
 - confidence:
 - freshness:
 - invalidation_condition:
+- write_trigger:
+- review_after:
 - owner:
 - created_at:
 - updated_at:
@@ -250,6 +257,67 @@
 - pointer_scheme:
 - artifact_root:
 - environment_scope:
+- pointer_minimum_fields:
 - failure_surface:
 - readback_method:
+```
+
+---
+
+## 十三、Evidence Pointer「证据指针」模板
+
+```md
+## Evidence Pointer
+- pointer_type:
+- pointer_value:
+- created_at:
+- producer_adapter_uid:
+- readback_method:
+- stability:
+- time_range:
+- query_or_filter:
+- retention_note:
+- checksum:
+```
+
+---
+
+## 十四、Runtime Adapter Snapshot「运行适配器快照」模板
+
+```md
+## Runtime Adapter Snapshot
+- run_uid:
+- issue_uid:
+- adapter_uid:
+- adapter_name:
+- tool_uid:
+- action_summary:
+- output_summary:
+- artifact_or_log_pointer:
+- evidence_pointer:
+- pointer_unavailable_reason:
+- failure_surface:
+- cleanup_hint:
+- readback_status:
+```
+
+---
+
+## 十三、Runtime Adapter Snapshot「运行适配器快照」模板
+
+```md
+## Runtime Adapter Snapshot
+- run_uid:
+- issue_uid:
+- adapter_uid:
+- adapter_name:
+- tool_uid:
+- action_summary:
+- output_summary:
+- artifact_or_log_pointer:
+- evidence_pointer:
+- pointer_readback_fields:
+- failure_surface:
+- cleanup_hint:
+- readback_status:
 ```
