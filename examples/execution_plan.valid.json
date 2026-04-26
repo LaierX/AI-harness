@@ -1,0 +1,23 @@
+{
+  "run_uid": "run-v4.4-demo",
+  "issue_uid": "issue-v4.4-demo",
+  "target": "Harness v4 minimal runner",
+  "execution_profile": "L2",
+  "current_step": "observing",
+  "objective": "Validate a minimal execution plan through JSON Schema.",
+  "hypothesis": "Schema validation can catch structural drift before runner execution.",
+  "constraints": [
+    "Use local files only",
+    "Do not change workflow_state"
+  ],
+  "evidence_needed": [
+    "Schema validation result",
+    "Artifact readback result"
+  ],
+  "stop_conditions": [
+    "Schema validation fails",
+    "Artifact readback fails"
+  ],
+  "next_step": "reproducing",
+  "schema_version": "v4.3.0"
+}

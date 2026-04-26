@@ -941,6 +941,28 @@ schema 校验通过不等于 Record Gate 通过。L3 强结构对象必须通过
 
 ---
 
+# 十七点七、Minimal Runner Module「最小运行器模块」
+
+Minimal Runner 是开发期 / 本地执行辅助模块，不构成新的 workflow_state。
+
+它负责：
+- 加载 `schemas/*.schema.json`
+- 校验 JSON object 是否符合对应 schema
+- 写入本地 artifact
+- 回读 artifact 并确认其可定位、可解析
+
+当前最小实现位于 `runner/harness_runner.py`。
+
+Minimal Runner 只跑通：
+
+```text
+load schema -> load input -> validate -> write artifact -> readback artifact
+```
+
+runner 校验通过不等于 Record Gate 通过；artifact readback 通过只证明产物可定位、可解析。
+
+---
+
 # 十八、v4 推荐目录结构
 
 ```text
@@ -994,6 +1016,11 @@ schema 校验通过不等于 Record Gate 通过。L3 强结构对象必须通过
   09-schemas/
     schemas-module.md
     schemas/*.schema.json
+
+  10-runner/
+    minimal-runner-module.md
+    runner/harness_runner.py
+    examples/*.json
 ```
 
 ---
@@ -1110,6 +1137,8 @@ schema 校验通过不等于 Record Gate 通过。L3 强结构对象必须通过
 17. Runtime pointer 必须可回读，并声明保留策略。
 18. JSON Schema 只做结构校验，不替代业务判断、Context Gate 或 Record Gate。
 19. L3 强结构对象必须通过 schema 校验后才能进入完整闭环资产。
+20. Minimal Runner 只执行 schema validation、artifact write 与 readback，不推进 workflow_state。
+21. runner readback 通过不等于 Record Gate 通过。
 
 ---
 
@@ -1150,6 +1179,12 @@ schema 校验通过不等于 Record Gate 通过。L3 强结构对象必须通过
 - Schemas Module
 - JSON Schema 校验入口
 - runner / executor 的 schema validation 接入
+
+## Phase 6「阶段六」
+补齐：
+- Minimal Runner Module
+- 本地 schema validation / artifact write / readback
+- runner 输出与 Record & Evidence Module 的衔接
 
 ---
 

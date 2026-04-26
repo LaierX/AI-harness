@@ -49,7 +49,13 @@ Schemas Module 是结构校验资产模块，不构成新的 workflow_state「�
 - regression rule asset 校验
 - governance review 自动反审
 
-### 2.3 漂移处理
+### 2.3 runner 接入口
+
+`runner/harness_runner.py` 是当前最小 runner 接入口。
+
+它可以加载 `schemas/*.schema.json` 并校验 JSON object，但它不替代 Schemas Module 的规范定义。
+
+### 2.4 漂移处理
 
 当 Markdown 模板与 JSON Schema 字段不一致：
 - 不得静默选择其中一方
@@ -160,6 +166,7 @@ Governance Module 应定期检查：
 - required 字段是否低于对应模块的最小输出要求
 - schema 是否引用了不存在的 `$defs`
 - L3 闭环资产是否存在未校验结构
+- runner 是否仍覆盖当前 schema 使用的 JSON Schema 子集
 
 ---
 

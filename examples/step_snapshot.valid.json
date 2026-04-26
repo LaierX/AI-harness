@@ -1,0 +1,14 @@
+{
+  "step": "observing",
+  "objective": "Confirm the runner can write and read back a step snapshot artifact.",
+  "action_summary": "Ran the minimal harness runner against the step snapshot schema.",
+  "key_evidence": [
+    "Validation passed",
+    "Artifact readback passed"
+  ],
+  "evidence_pointer": "cmd://run-v4.4-demo/harness-runner-step-snapshot",
+  "decision": "The minimal runner path is structurally viable.",
+  "next_or_rollback": "Proceed to runner module documentation.",
+  "readback_status": "pass",
+  "schema_version": "v4.3.0"
+}

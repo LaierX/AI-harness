@@ -1,8 +1,8 @@
-# 🧠 Harness v4 模块化规范套件 v4.3.0
+# 🧠 Harness v4 模块化规范套件 v4.4.0
 
 > 目标：提供一套可由 Hermes / Agent「智能体」直接读取、装配与执行的 Harness v4 模块化规范。
 > 定位：本套件为 v4 的目录化版本；保留 workflow「流程」主线，同时把能力拆为 module「模块」与 controller「控制器」。
-> 本版更新：新增 Schemas Module 与 `schemas/` JSON Schema 目录，把核心模板升级为机器可校验结构。
+> 本版更新：新增 Minimal Runner，跑通 schema 校验、artifact 写入与 readback 的最小本地可执行路径。
 
 ---
 
@@ -43,6 +43,9 @@
 按需附加：
 18. `12_SCHEMAS_MODULE.md`
 19. `schemas/`
+20. `13_MINIMAL_RUNNER_MODULE.md`
+21. `runner/`
+22. `examples/`
 
 ---
 
@@ -74,7 +77,8 @@ Harness v4
 ├── Regression Executor Module「回归执行器模块」
 ├── Governance Module「治理模块」
 ├── Runtime Adapter Module「运行时适配器模块」
-└── Schemas Module「结构校验模块」
+├── Schemas Module「结构校验模块」
+└── Minimal Runner Module「最小运行器模块」
 ```
 
 ---
@@ -96,6 +100,8 @@ Harness v4
 - Runtime Adapter 输出的 pointer 必须具备可定位、可回读、可复核的最小字段。
 - JSON Schema 只负责结构校验；schema 校验通过不等于 Record Gate 通过。
 - L3 强结构对象必须通过对应 `schemas/*.schema.json` 校验后，才允许进入完整闭环资产。
+- Minimal Runner 只执行 schema 校验、artifact 写入与 readback，不推进 workflow_state。
+- runner readback 通过只证明 artifact 可定位、可解析，不等于 Record Gate 通过。
 - `04G~04J` 为 optional capability modules；它们可以被调用，但不单独构成新的 workflow_state。
 - optional capability modules 退出前仍必须通过 Record Gate「记录出口守卫」。
 
@@ -130,8 +136,12 @@ Harness v4
 - `10_CHANGELOG_v4.2.0.md`
 - `10_CHANGELOG_v4.2.1.md`
 - `10_CHANGELOG_v4.3.0.md`
+- `10_CHANGELOG_v4.4.0.md`
 - `11_RUNTIME_ADAPTER_MODULE.md`
 - `12_SCHEMAS_MODULE.md`
+- `13_MINIMAL_RUNNER_MODULE.md`
+- `examples/`
+- `runner/`
 - `schemas/`
 
 ---
@@ -168,8 +178,12 @@ Harness v4
   10_CHANGELOG_v4.2.0.md
   10_CHANGELOG_v4.2.1.md
   10_CHANGELOG_v4.3.0.md
+  10_CHANGELOG_v4.4.0.md
   11_RUNTIME_ADAPTER_MODULE.md
   12_SCHEMAS_MODULE.md
+  13_MINIMAL_RUNNER_MODULE.md
+  examples/
+  runner/
   schemas/
 ```
 
@@ -188,4 +202,5 @@ Harness v4
 - 需要跨 run 经验复用：再读取 `Memory Layer`
 - 需要接入具体文件、命令、浏览器、数据库、CI 或发布环境：再读取 `Runtime Adapter`
 - 需要机器校验、runner 接入或强结构闭环：再读取 `Schemas Module + schemas/`
+- 需要本地最小执行闭环：再读取 `Minimal Runner Module + runner/ + examples/`
 - 版本治理：再读取 `Governance Module`
