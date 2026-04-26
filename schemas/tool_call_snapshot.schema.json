@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/tool_call_snapshot.schema.json",
+  "title": "Tool Call Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "run_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "issue_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "workflow_state": { "$ref": "common.schema.json#/$defs/workflowState" },
+    "module_name": { "type": "string", "minLength": 1 },
+    "module_mode": { "$ref": "common.schema.json#/$defs/moduleMode" },
+    "tool_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "tool_name": { "type": "string", "minLength": 1 },
+    "input_summary": { "type": "string", "minLength": 1 },
+    "output_summary": { "type": "string" },
+    "side_effect_level": { "$ref": "common.schema.json#/$defs/sideEffectLevel" },
+    "profile_check_result": { "$ref": "common.schema.json#/$defs/gateResult" },
+    "context_gate_result": { "$ref": "common.schema.json#/$defs/gateResult" },
+    "artifact_or_log_pointer": { "$ref": "common.schema.json#/$defs/pointerValue" },
+    "evidence_pointer": { "$ref": "common.schema.json#/$defs/pointerValue" },
+    "failure_type": { "type": ["string", "null"] },
+    "exit_code": { "type": ["integer", "null"] },
+    "retry_count": { "type": "integer", "minimum": 0 },
+    "decision": { "type": "string", "minLength": 1 },
+    "readback_status": { "$ref": "common.schema.json#/$defs/readbackStatus" }
+  },
+  "required": [
+    "run_uid",
+    "issue_uid",
+    "tool_uid",
+    "tool_name",
+    "input_summary",
+    "side_effect_level",
+    "profile_check_result",
+    "context_gate_result",
+    "evidence_pointer",
+    "retry_count",
+    "decision",
+    "readback_status"
+  ]
+}

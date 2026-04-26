@@ -39,6 +39,9 @@ Governance Module 负责：
 - 检查 tool call 是否缺少 tool contract / artifact pointer / readback
 - 检查 memory 是否从未闭环 run 写入，或与当前证据冲突后未标记
 - 检查 runtime adapter 是否生成不可回读 pointer
+- 检查 Markdown 模板与 JSON Schema 是否字段漂移
+- 检查 schema required 字段是否低于对应模块的最小输出要求
+- 检查 schema 是否引用不存在的 `$defs`
 
 执行反审时，建议使用 `09_TEMPLATES.md` 中的 Governance Review Checklist「治理反审清单」模板。
 
@@ -60,6 +63,15 @@ Governance Module 负责：
 - tool_contract_gap
 - memory_gap
 - runtime_adapter_gap
+
+### 4.2 v4.3 schema 反审补充
+
+涉及 Schemas Module 的反审还应输出：
+- schema_gap
+- schema_drift
+- missing_required_field
+- broken_schema_ref
+- recommended_schema_version
 
 ---
 

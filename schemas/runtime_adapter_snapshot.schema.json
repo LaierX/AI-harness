@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/runtime_adapter_snapshot.schema.json",
+  "title": "Runtime Adapter Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "run_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "issue_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "adapter_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "adapter_name": { "type": "string", "minLength": 1 },
+    "tool_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "action_summary": { "type": "string", "minLength": 1 },
+    "output_summary": { "type": "string" },
+    "artifact_or_log_pointer": { "$ref": "common.schema.json#/$defs/pointerValue" },
+    "evidence_pointer": { "$ref": "common.schema.json#/$defs/pointerValue" },
+    "pointer_unavailable_reason": { "type": ["string", "null"] },
+    "failure_surface": { "type": ["string", "null"] },
+    "cleanup_hint": { "type": ["string", "null"] },
+    "readback_status": { "$ref": "common.schema.json#/$defs/readbackStatus" }
+  },
+  "required": [
+    "run_uid",
+    "issue_uid",
+    "adapter_uid",
+    "adapter_name",
+    "tool_uid",
+    "action_summary",
+    "evidence_pointer",
+    "readback_status"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/step_snapshot.schema.json",
+  "title": "Step Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "step",
+    "objective",
+    "action_summary",
+    "key_evidence",
+    "evidence_pointer",
+    "decision",
+    "next_or_rollback",
+    "readback_status"
+  ],
+  "properties": {
+    "step": { "$ref": "common.schema.json#/$defs/workflowState" },
+    "objective": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "action_summary": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "key_evidence": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "evidence_pointer": { "$ref": "common.schema.json#/$defs/pointerValue" },
+    "decision": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "next_or_rollback": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "readback_status": { "$ref": "common.schema.json#/$defs/readbackStatus" },
+    "schema_version": { "$ref": "common.schema.json#/$defs/nonEmptyString" }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/runtime_adapter_capability.schema.json",
+  "title": "Runtime Adapter Capability",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "adapter_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "adapter_name": { "type": "string", "minLength": 1 },
+    "adapter_type": {
+      "type": "string",
+      "enum": ["file", "shell", "browser_ui", "data", "observability", "ci_release"]
+    },
+    "supported_tool_types": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["read_only", "local_write", "environment_change", "external_call", "release_action"]
+      }
+    },
+    "pointer_scheme": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "artifact_root": { "type": "string", "minLength": 1 },
+    "environment_scope": { "type": "string", "minLength": 1 },
+    "pointer_minimum_fields": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "type": "string" },
+      "contains": { "const": "readback_method" }
+    },
+    "failure_surface": { "type": "string", "minLength": 1 },
+    "readback_method": { "type": "string", "minLength": 1 }
+  },
+  "required": [
+    "adapter_uid",
+    "adapter_name",
+    "adapter_type",
+    "supported_tool_types",
+    "pointer_scheme",
+    "artifact_root",
+    "environment_scope",
+    "pointer_minimum_fields",
+    "failure_surface",
+    "readback_method"
+  ]
+}

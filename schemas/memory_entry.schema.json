@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/memory_entry.schema.json",
+  "title": "Memory Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "memory_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "memory_type": {
+      "type": "string",
+      "enum": ["episodic", "semantic", "procedural", "regression"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "tentative", "needs_review", "deprecated"]
+    },
+    "source_run_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "source_issue_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "source_pointer": { "$ref": "common.schema.json#/$defs/pointerValue" },
+    "summary": { "type": "string", "minLength": 1 },
+    "applicability": { "type": "string", "minLength": 1 },
+    "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+    "freshness": { "type": "string", "enum": ["current", "aging", "stale"] },
+    "invalidation_condition": { "type": "string", "minLength": 1 },
+    "write_trigger": {
+      "type": "string",
+      "enum": ["closing_completed", "governance_review_confirmed", "regression_executor_stable_result"]
+    },
+    "review_after": { "type": ["string", "null"], "format": "date-time" },
+    "owner": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  },
+  "required": [
+    "memory_uid",
+    "memory_type",
+    "status",
+    "source_run_uid",
+    "source_issue_uid",
+    "source_pointer",
+    "summary",
+    "applicability",
+    "confidence",
+    "freshness",
+    "invalidation_condition",
+    "write_trigger",
+    "owner",
+    "created_at",
+    "updated_at"
+  ]
+}

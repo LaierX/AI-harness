@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/execution_plan.schema.json",
+  "title": "Execution Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_uid",
+    "issue_uid",
+    "target",
+    "execution_profile",
+    "current_step",
+    "objective",
+    "hypothesis",
+    "constraints",
+    "evidence_needed",
+    "stop_conditions",
+    "next_step"
+  ],
+  "properties": {
+    "run_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "issue_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "target": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "execution_profile": { "$ref": "common.schema.json#/$defs/executionProfile" },
+    "current_step": { "$ref": "common.schema.json#/$defs/workflowState" },
+    "objective": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "hypothesis": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "constraints": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "evidence_needed": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "stop_conditions": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "next_step": { "$ref": "common.schema.json#/$defs/workflowState" },
+    "schema_version": { "$ref": "common.schema.json#/$defs/nonEmptyString" }
+  }
+}

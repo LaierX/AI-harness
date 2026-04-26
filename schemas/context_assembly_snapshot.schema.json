@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/context_assembly_snapshot.schema.json",
+  "title": "Context Assembly Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "run_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "issue_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "assembly_mode": {
+      "type": "string",
+      "enum": ["run_bootstrap", "step_transition", "module_call", "compression_recovery"]
+    },
+    "workflow_state": { "$ref": "common.schema.json#/$defs/workflowState" },
+    "module_name": { "type": "string", "minLength": 1 },
+    "module_mode": { "$ref": "common.schema.json#/$defs/moduleMode" },
+    "objective": { "type": "string", "minLength": 1 },
+    "injected_context": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/nonEmptyString" }
+    },
+    "pointer_only_context": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/pointerValue" }
+    },
+    "excluded_context": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/nonEmptyString" }
+    },
+    "stale_or_tentative_items": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/nonEmptyString" }
+    },
+    "memory_conflicts": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/nonEmptyString" }
+    },
+    "gate_sequence": {
+      "type": "array",
+      "items": { "type": "string" },
+      "contains": { "const": "context_gate" }
+    },
+    "context_gate_result": { "$ref": "common.schema.json#/$defs/gateResult" },
+    "readback_status": { "$ref": "common.schema.json#/$defs/readbackStatus" }
+  },
+  "required": [
+    "run_uid",
+    "issue_uid",
+    "assembly_mode",
+    "objective",
+    "injected_context",
+    "pointer_only_context",
+    "context_gate_result",
+    "readback_status"
+  ]
+}

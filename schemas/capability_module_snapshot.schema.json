@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/capability_module_snapshot.schema.json",
+  "title": "Capability Module Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "step",
+    "module_name",
+    "module_mode",
+    "objective",
+    "action_summary",
+    "key_evidence",
+    "evidence_pointer",
+    "artifact_or_log_pointer",
+    "risk_note",
+    "decision",
+    "next_or_rollback",
+    "readback_status"
+  ],
+  "properties": {
+    "step": { "$ref": "common.schema.json#/$defs/workflowState" },
+    "module_name": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "module_mode": { "$ref": "common.schema.json#/$defs/moduleMode" },
+    "objective": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "action_summary": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "key_evidence": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "evidence_pointer": { "$ref": "common.schema.json#/$defs/pointerValue" },
+    "artifact_or_log_pointer": { "$ref": "common.schema.json#/$defs/pointerValue" },
+    "risk_note": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "decision": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "next_or_rollback": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "readback_status": { "$ref": "common.schema.json#/$defs/readbackStatus" },
+    "schema_version": { "$ref": "common.schema.json#/$defs/nonEmptyString" }
+  }
+}

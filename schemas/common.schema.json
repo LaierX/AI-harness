@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/common.schema.json",
+  "title": "Harness v4 Common Schema Definitions",
+  "description": "Shared enums and reusable structural fragments for Harness v4 schemas.",
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "uid": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "textList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      }
+    },
+    "textOrList": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        {
+          "$ref": "#/$defs/textList"
+        }
+      ]
+    },
+    "textListOrObject": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        {
+          "$ref": "#/$defs/textList"
+        },
+        {
+          "type": "object",
+          "additionalProperties": true
+        }
+      ]
+    },
+    "pointerValue": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        {
+          "type": "object",
+          "additionalProperties": true
+        }
+      ]
+    },
+    "executionProfile": {
+      "type": "string",
+      "enum": ["L1", "L2", "L3"]
+    },
+    "workflowState": {
+      "type": "string",
+      "enum": [
+        "observing",
+        "reproducing",
+        "isolating",
+        "attributing",
+        "fixing",
+        "verifying",
+        "closing"
+      ]
+    },
+    "lifecycleState": {
+      "type": "string",
+      "enum": ["open", "investigating", "fixing", "verifying", "closed"]
+    },
+    "moduleMode": {
+      "type": "string",
+      "enum": [
+        "probe",
+        "assist",
+        "standalone_check",
+        "in_workflow",
+        "change_execution",
+        "release_execution"
+      ]
+    },
+    "readbackStatus": {
+      "type": "string",
+      "enum": ["pending", "pass", "fail", "unknown", "not_required"]
+    },
+    "gateResult": {
+      "type": "string",
+      "enum": ["pass", "fail", "unknown", "not_required"]
+    },
+    "toolType": {
+      "type": "string",
+      "enum": [
+        "read_only",
+        "local_write",
+        "environment_change",
+        "external_call",
+        "release_action"
+      ]
+    },
+    "sideEffectLevel": {
+      "type": "string",
+      "enum": ["none", "low", "medium", "high"]
+    },
+    "adapterType": {
+      "type": "string",
+      "enum": [
+        "file",
+        "shell",
+        "browser_ui",
+        "data",
+        "observability",
+        "ci_release"
+      ]
+    },
+    "pointerStability": {
+      "type": "string",
+      "enum": ["stable", "unstable", "unknown"]
+    },
+    "memoryType": {
+      "type": "string",
+      "enum": ["episodic", "semantic", "procedural", "regression"]
+    },
+    "memoryStatus": {
+      "type": "string",
+      "enum": ["active", "tentative", "needs_review", "deprecated"]
+    },
+    "memoryConfidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "memoryFreshness": {
+      "type": "string",
+      "enum": ["current", "aging", "stale"]
+    },
+    "regressionScope": {
+      "type": "string",
+      "enum": ["target", "project", "control_plane", "global"]
+    },
+    "regressionRuleStatus": {
+      "type": "string",
+      "enum": ["draft", "active", "disabled", "superseded"]
+    },
+    "regressionSeverity": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"]
+    }
+  }
+}

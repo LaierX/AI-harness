@@ -921,7 +921,23 @@ Runtime Adapter 是运行环境适配层，不构成新的 workflow_state。
 - Observability Adapter
 - CI / Release Adapter
 
-Runtime Adapter 必须输出可回读 pointer。pointer 至少应包含 `pointer_uri`、`pointer_type`、`created_at`、`readback_method` 与 `retention_policy`。它不得推进 workflow_state，不得绕过 Tool Contract Registry 执行高副作用动作。
+Runtime Adapter 必须输出可回读 pointer。pointer 至少应包含 `pointer_type`、`pointer_value`、`created_at`、`producer_adapter_uid` 与 `readback_method`。它不得推进 workflow_state，不得绕过 Tool Contract Registry 执行高副作用动作。
+
+---
+
+# 十七点六、Schemas Module「结构校验模块」
+
+Schemas Module 是结构校验资产模块，不构成新的 workflow_state。
+
+它负责：
+- 为核心记录、工具、记忆、运行适配与回归资产提供 JSON Schema
+- 固定枚举与必填字段
+- 为 runner / executor / governance review 提供机器校验依据
+- 发现 Markdown 模板与 JSON Schema 字段漂移时触发治理反审
+
+`09_TEMPLATES.md` 服务于人类填写与审阅；`schemas/*.schema.json` 服务于机器校验。
+
+schema 校验通过不等于 Record Gate 通过。L3 强结构对象必须通过对应 schema 校验后，才允许进入完整闭环资产。
 
 ---
 
@@ -974,6 +990,10 @@ Runtime Adapter 必须输出可回读 pointer。pointer 至少应包含 `pointer
 
   08-runtime/
     runtime-adapter-module.md
+
+  09-schemas/
+    schemas-module.md
+    schemas/*.schema.json
 ```
 
 ---
@@ -1088,13 +1108,15 @@ Runtime Adapter 必须输出可回读 pointer。pointer 至少应包含 `pointer
 15. Context Gate 是入口门，Record Gate 是出口门，二者不得互相替代。
 16. 长期 memory 只能从已闭环且可回读的记录中沉淀。
 17. Runtime pointer 必须可回读，并声明保留策略。
+18. JSON Schema 只做结构校验，不替代业务判断、Context Gate 或 Record Gate。
+19. L3 强结构对象必须通过 schema 校验后才能进入完整闭环资产。
 
 ---
 
 # 二十二、推荐落地顺序
 
 ## Phase 1「阶段一」
-先落地以下 4 个核心模块：
+先落地以下核心模块：
 - Kernel Module
 - Execution Profile Controller
 - Context Controller Module
@@ -1123,6 +1145,12 @@ Runtime Adapter 必须输出可回读 pointer。pointer 至少应包含 `pointer
 - Runtime Adapter Module
 - Governance Module 与规范反审 Cron
 
+## Phase 5「阶段五」
+补齐：
+- Schemas Module
+- JSON Schema 校验入口
+- runner / executor 的 schema validation 接入
+
 ---
 
 # 二十三、最终结论
@@ -1136,6 +1164,7 @@ Harness v4 不再是“只能顺序阅读的一组步骤文档”，而是一套
 - 有长期记忆分层
 - 有可装配运行引擎
 - 有运行环境适配层
+- 有机器可校验 schema 层
 - 有闭环收束模块
 - 有长期回归能力
 - 有治理与反审能力

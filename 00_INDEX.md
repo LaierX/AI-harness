@@ -1,8 +1,8 @@
-# 🧠 Harness v4 模块化规范套件 v4.2.1
+# 🧠 Harness v4 模块化规范套件 v4.3.0
 
 > 目标：提供一套可由 Hermes / Agent「智能体」直接读取、装配与执行的 Harness v4 模块化规范。
 > 定位：本套件为 v4 的目录化版本；保留 workflow「流程」主线，同时把能力拆为 module「模块」与 controller「控制器」。
-> 本版更新：收紧 Context / Tool / Memory / Runtime 横切模块边界，明确门控顺序、副作用约束、memory 写入条件与 pointer 回读口径。
+> 本版更新：新增 Schemas Module 与 `schemas/` JSON Schema 目录，把核心模板升级为机器可校验结构。
 
 ---
 
@@ -39,6 +39,11 @@
 16. `03A_MEMORY_LAYER_MODULE.md`
 17. `11_RUNTIME_ADAPTER_MODULE.md`
 
+### 如需机器校验 / runner 接入
+按需附加：
+18. `12_SCHEMAS_MODULE.md`
+19. `schemas/`
+
 ---
 
 ## 二、总模块图
@@ -68,7 +73,8 @@ Harness v4
 ├── Regression Asset Module「回归资产模块」
 ├── Regression Executor Module「回归执行器模块」
 ├── Governance Module「治理模块」
-└── Runtime Adapter Module「运行时适配器模块」
+├── Runtime Adapter Module「运行时适配器模块」
+└── Schemas Module「结构校验模块」
 ```
 
 ---
@@ -88,6 +94,8 @@ Harness v4
 - Memory 只能从已闭环且已回读的 run 中沉淀；读取 memory 时必须标记适用性与置信度。
 - Runtime Adapter 不改变 Harness 状态机；它只把工具契约映射到具体运行环境。
 - Runtime Adapter 输出的 pointer 必须具备可定位、可回读、可复核的最小字段。
+- JSON Schema 只负责结构校验；schema 校验通过不等于 Record Gate 通过。
+- L3 强结构对象必须通过对应 `schemas/*.schema.json` 校验后，才允许进入完整闭环资产。
 - `04G~04J` 为 optional capability modules；它们可以被调用，但不单独构成新的 workflow_state。
 - optional capability modules 退出前仍必须通过 Record Gate「记录出口守卫」。
 
@@ -121,7 +129,10 @@ Harness v4
 - `10_CHANGELOG_v4.1.1.md`
 - `10_CHANGELOG_v4.2.0.md`
 - `10_CHANGELOG_v4.2.1.md`
+- `10_CHANGELOG_v4.3.0.md`
 - `11_RUNTIME_ADAPTER_MODULE.md`
+- `12_SCHEMAS_MODULE.md`
+- `schemas/`
 
 ---
 
@@ -156,7 +167,10 @@ Harness v4
   10_CHANGELOG_v4.1.1.md
   10_CHANGELOG_v4.2.0.md
   10_CHANGELOG_v4.2.1.md
+  10_CHANGELOG_v4.3.0.md
   11_RUNTIME_ADAPTER_MODULE.md
+  12_SCHEMAS_MODULE.md
+  schemas/
 ```
 
 ---
@@ -173,4 +187,5 @@ Harness v4
 - 长期巡检：再读取 `Regression Asset + Regression Executor`
 - 需要跨 run 经验复用：再读取 `Memory Layer`
 - 需要接入具体文件、命令、浏览器、数据库、CI 或发布环境：再读取 `Runtime Adapter`
+- 需要机器校验、runner 接入或强结构闭环：再读取 `Schemas Module + schemas/`
 - 版本治理：再读取 `Governance Module`

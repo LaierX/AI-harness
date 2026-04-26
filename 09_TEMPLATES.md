@@ -1,6 +1,7 @@
 # 09. Templates「模板集」
 
 > 作用：提供可直接复制使用的 plan「计划」、step snapshot「步骤快照」、closing summary「闭环摘要」与 capability module「能力模块」模板。
+> 说明：本文件是人类可读模板入口；机器校验入口见 `12_SCHEMAS_MODULE.md` 与 `schemas/*.schema.json`。
 
 ---
 
@@ -296,27 +297,6 @@
 - artifact_or_log_pointer:
 - evidence_pointer:
 - pointer_unavailable_reason:
-- failure_surface:
-- cleanup_hint:
-- readback_status:
-```
-
----
-
-## 十三、Runtime Adapter Snapshot「运行适配器快照」模板
-
-```md
-## Runtime Adapter Snapshot
-- run_uid:
-- issue_uid:
-- adapter_uid:
-- adapter_name:
-- tool_uid:
-- action_summary:
-- output_summary:
-- artifact_or_log_pointer:
-- evidence_pointer:
-- pointer_readback_fields:
 - failure_surface:
 - cleanup_hint:
 - readback_status:

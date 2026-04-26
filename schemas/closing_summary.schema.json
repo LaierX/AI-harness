@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/closing_summary.schema.json",
+  "title": "Closing Summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_uid",
+    "issue_uid",
+    "workflow_state",
+    "lifecycle_state",
+    "primary_record_db",
+    "narrative_path",
+    "rule_required",
+    "rule_reason",
+    "rule_location",
+    "close_summary",
+    "readback_status"
+  ],
+  "properties": {
+    "run_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "issue_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "workflow_state": { "const": "closing" },
+    "lifecycle_state": { "$ref": "common.schema.json#/$defs/lifecycleState" },
+    "primary_record_db": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "narrative_path": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "rule_required": { "type": "boolean" },
+    "rule_reason": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "rule_location": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "close_summary": { "$ref": "common.schema.json#/$defs/textListOrObject" },
+    "readback_status": { "$ref": "common.schema.json#/$defs/readbackStatus" },
+    "schema_version": { "$ref": "common.schema.json#/$defs/nonEmptyString" }
+  }
+}

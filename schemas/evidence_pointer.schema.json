@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/evidence_pointer.schema.json",
+  "title": "Evidence Pointer",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "pointer_type": {
+      "type": "string",
+      "enum": ["file", "log", "cmd", "db", "trace", "image", "ci", "release", "artifact", "other"]
+    },
+    "pointer_value": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "producer_adapter_uid": { "$ref": "common.schema.json#/$defs/uid" },
+    "readback_method": { "type": "string", "minLength": 1 },
+    "stability": { "type": "string", "enum": ["stable", "unstable"] },
+    "time_range": { "type": ["string", "null"] },
+    "query_or_filter": { "type": ["string", "null"] },
+    "retention_note": { "type": ["string", "null"] },
+    "checksum": { "type": ["string", "null"] }
+  },
+  "required": [
+    "pointer_type",
+    "pointer_value",
+    "created_at",
+    "producer_adapter_uid",
+    "readback_method",
+    "stability"
+  ]
+}
