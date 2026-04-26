@@ -57,7 +57,9 @@ Harness v4
 ├── Regression Asset Module
 ├── Regression Executor Module
 ├── Governance Module
-└── Runtime Adapter Module
+├── Runtime Adapter Module
+├── Schemas Module
+└── Minimal Runner Module
 ```
 
 ## 2.1 模块边界原则
@@ -876,6 +878,27 @@ read rule → run rule → save evidence → write result → fail handoff
 - 必须触发新的 v4 run 或 handoff record
 - 不得默认直接自动修复
 
+## 16.5 v4.5 MVP
+
+当前最小实现由 `runner/harness_runner.py run-regression` 提供。
+
+v4.5 MVP 只支持：
+- 读取 `status = active` 的 regression rule
+- 执行 `executor_type = schema_validation`
+- 校验 `executor_config.schema` 与 `executor_config.input`
+- 写入 regression executor result artifact
+- 产出 `evidence_pointer`
+- 回读 artifact
+
+当前 MVP 不支持：
+- shell command worker
+- network worker
+- deploy / rollback worker
+- 自动修复
+- 自动创建或复用 issue
+
+当执行结果为 `fail` / `error` 时，只能返回 `next_action`，不得直接进入自动修复。
+
 ---
 
 # 十七、Governance Module「治理模块」
@@ -935,7 +958,7 @@ Schemas Module 是结构校验资产模块，不构成新的 workflow_state。
 - 为 runner / executor / governance review 提供机器校验依据
 - 发现 Markdown 模板与 JSON Schema 字段漂移时触发治理反审
 
-`09_TEMPLATES.md` 服务于人类填写与审阅；`schemas/*.schema.json` 服务于机器校验。
+`09_TEMPLATES.md` 服务于人类填写与审阅；`schemas/*.schema.json` 服务于机器校验。`schemas/regression_executor_result.schema.json` 定义 v4.5 Regression Executor MVP 的结果结构。
 
 schema 校验通过不等于 Record Gate 通过。L3 强结构对象必须通过对应 schema 校验后，才允许进入完整闭环资产。
 
@@ -957,6 +980,12 @@ Minimal Runner 只跑通：
 
 ```text
 load schema -> load input -> validate -> write artifact -> readback artifact
+```
+
+v4.5 起，Minimal Runner 还提供 `run-regression`，用于跑通：
+
+```text
+load active rule -> schema_validation worker -> write regression result -> evidence pointer -> readback
 ```
 
 runner 校验通过不等于 Record Gate 通过；artifact readback 通过只证明产物可定位、可解析。
@@ -1005,6 +1034,7 @@ runner 校验通过不等于 Record Gate 通过；artifact readback 通过只证
   06-regression/
     regression-asset-module.md
     regression-executor-module.md
+    examples/regression_rule.schema_validation.active.json
 
   07-governance/
     governance-module.md
@@ -1016,6 +1046,7 @@ runner 校验通过不等于 Record Gate 通过；artifact readback 通过只证
   09-schemas/
     schemas-module.md
     schemas/*.schema.json
+    regression-executor-result.schema.json
 
   10-runner/
     minimal-runner-module.md
@@ -1139,6 +1170,8 @@ runner 校验通过不等于 Record Gate 通过；artifact readback 通过只证
 19. L3 强结构对象必须通过 schema 校验后才能进入完整闭环资产。
 20. Minimal Runner 只执行 schema validation、artifact write 与 readback，不推进 workflow_state。
 21. runner readback 通过不等于 Record Gate 通过。
+22. Regression Executor MVP 只执行 `status = active` 的规则，且当前只支持 `executor_type = schema_validation`。
+23. Regression Executor MVP 不得自动修复；fail / error 只能返回 `next_action` 或 handoff 意图。
 
 ---
 
@@ -1185,6 +1218,13 @@ runner 校验通过不等于 Record Gate 通过；artifact readback 通过只证
 - Minimal Runner Module
 - 本地 schema validation / artifact write / readback
 - runner 输出与 Record & Evidence Module 的衔接
+
+## Phase 7「阶段七」
+补齐：
+- Regression Executor MVP
+- active rule loader
+- schema_validation worker
+- regression result artifact 与 evidence pointer
 
 ---
 

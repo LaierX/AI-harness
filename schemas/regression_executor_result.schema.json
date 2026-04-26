@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LaierX/AI-harness/schemas/regression_executor_result.schema.json",
+  "title": "Regression Executor Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source",
+    "active_rule_count",
+    "results"
+  ],
+  "properties": {
+    "source": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "active_rule_count": { "type": "integer", "minimum": 0 },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "rule_uid",
+          "source_issue_uid",
+          "target",
+          "executor_type",
+          "executed_at",
+          "result",
+          "summary",
+          "next_action"
+        ],
+        "properties": {
+          "rule_uid": { "$ref": "common.schema.json#/$defs/uid" },
+          "source_issue_uid": { "$ref": "common.schema.json#/$defs/uid" },
+          "target": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+          "executor_type": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+          "executed_at": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+          "result": {
+            "type": "string",
+            "enum": ["pass", "fail", "error", "skipped"]
+          },
+          "summary": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+          "detail": {
+            "type": ["object", "null"],
+            "additionalProperties": true
+          },
+          "next_action": { "$ref": "common.schema.json#/$defs/nonEmptyString" }
+        }
+      }
+    },
+    "schema_version": { "$ref": "common.schema.json#/$defs/nonEmptyString" }
+  }
+}

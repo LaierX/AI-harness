@@ -92,6 +92,33 @@ python3 runner/harness_runner.py run \
 load schema -> load input -> validate -> write artifact -> readback artifact
 ```
 
+### 3.4 执行 active regression rule
+
+```bash
+python3 runner/harness_runner.py run-regression \
+  --rules examples/regression_rule.schema_validation.active.json
+```
+
+当前仅支持安全 worker：
+
+```text
+executor_type = schema_validation
+```
+
+执行顺序：
+
+```text
+load rules -> filter active -> validate rule asset -> run schema_validation -> write result artifact -> readback artifact
+```
+
+`run-regression` 会输出：
+- `result`
+- `active_rule_count`
+- `artifact_path`
+- `evidence_pointer`
+- `readback_status`
+- `results`
+
 ---
 
 ## 四、支持的 JSON Schema 子集
@@ -152,3 +179,4 @@ readback 通过不等于 Record Gate 通过。
 - 不得让 runner 自动推进 workflow_state
 - 不得把 `artifacts/` 临时产物当作长期闭环资产
 - 不得把当前 runner 视为完整 JSON Schema 引擎
+- 不得把 `run-regression` 的 pass 结果冒充完整 Regression Executor 生产能力

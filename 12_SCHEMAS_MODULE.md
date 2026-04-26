@@ -94,6 +94,7 @@ Schemas Module 是结构校验资产模块，不构成新的 workflow_state「�
 ### 3.5 Regression / Governance
 
 - `schemas/regression_rule.schema.json`
+- `schemas/regression_executor_result.schema.json`
 - `schemas/governance_review_checklist.schema.json`
 
 ---
@@ -128,6 +129,7 @@ L3 必须使用 JSON Schema 校验：
 - Evidence Pointer 与 Runtime Adapter Snapshot，如使用适配器
 - Closing Summary
 - Regression Rule，如 `rule_required = true`
+- Regression Executor Result，如执行 active rule
 - Memory Entry，如写入长期 memory
 
 任一必校对象未通过 schema 校验时：

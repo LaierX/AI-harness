@@ -121,3 +121,78 @@ rule active
 → result written
 → fail handoff
 ```
+
+---
+
+## 六、v4.5 MVP 实现边界
+
+v4.5 的最小执行器实现位于：
+
+```text
+runner/harness_runner.py
+```
+
+新增命令：
+
+```bash
+python3 runner/harness_runner.py run-regression \
+  --rules examples/regression_rule.schema_validation.active.json
+```
+
+当前 MVP 只支持安全 worker：
+
+- `executor_type = schema_validation`
+
+该 worker 只做本地 JSON Schema 校验：
+
+```text
+read active rule
+→ validate regression rule asset
+→ read executor_config.schema / executor_config.input
+→ validate input against schema
+→ write regression executor result artifact
+→ readback artifact
+→ return evidence_pointer
+```
+
+### 6.1 当前不支持
+
+v4.5 MVP 不支持：
+- shell command worker
+- network/API worker
+- browser/UI worker
+- deploy / rollout / rollback worker
+- 自动 issue 创建
+- 自动 new run 触发
+- 自动修复
+
+若规则执行结果为 `fail`，当前 MVP 只返回：
+- `result = fail`
+- `next_action = handoff_required`
+- evidence pointer
+
+不得把该结果伪装成完整 handoff 已完成。
+
+### 6.2 输出产物
+
+执行器输出 artifact 至少包含：
+- `schema`
+- `written_at`
+- `data.source`
+- `data.active_rule_count`
+- `data.results`
+
+`data` 必须通过：
+
+```text
+schemas/regression_executor_result.schema.json
+```
+
+---
+
+## 七、禁止事项补充
+
+- 不得执行非 `active` 状态规则
+- 不得把 `schema_validation` worker 扩展为任意命令执行
+- 不得在没有 evidence pointer 时写入 pass / fail
+- 不得把 MVP 的 `handoff_required` 视为 handoff 已完成

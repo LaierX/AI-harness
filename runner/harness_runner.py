@@ -184,6 +184,17 @@ def readback(path):
     return payload
 
 
+def now_utc():
+    return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def relative_to_root(path):
+    try:
+        return str(Path(path).resolve().relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
 def list_schemas():
     for path in sorted(SCHEMA_DIR.glob("*.schema.json")):
         if path.name != "common.schema.json":
@@ -207,6 +218,146 @@ def cmd_run(args):
     }, ensure_ascii=False, indent=2))
 
 
+def load_regression_rules(path):
+    data = load_json(path)
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict) and "rules" in data and isinstance(data["rules"], list):
+        return data["rules"]
+    if isinstance(data, dict):
+        return [data]
+    raise ValidationError("regression rules input must be an object, an array, or an object with rules[]")
+
+
+def run_schema_validation_rule(rule):
+    config = rule.get("executor_config", {})
+    schema_name = config.get("schema")
+    input_path = config.get("input")
+    if not schema_name or not input_path:
+        return {
+            "result": "error",
+            "summary": "schema_validation requires executor_config.schema and executor_config.input",
+            "detail": None,
+        }
+
+    try:
+        validate_file(schema_name, ROOT / input_path)
+        return {
+            "result": "pass",
+            "summary": f"validated {input_path} against {schema_name}",
+            "detail": {
+                "schema": schema_name,
+                "input": input_path,
+            },
+        }
+    except (ValidationError, json.JSONDecodeError, OSError, SystemExit) as exc:
+        return {
+            "result": "fail",
+            "summary": f"validation failed for {input_path} against {schema_name}",
+            "detail": {
+                "schema": schema_name,
+                "input": input_path,
+                "error": str(exc),
+            },
+        }
+
+
+def run_regression_rule(rule):
+    if rule.get("status") != "active":
+        return None
+
+    try:
+        common_defs = load_common_defs()
+        validate(rule, load_schema("regression_rule"), common_defs)
+    except ValidationError as exc:
+        return {
+            "rule_uid": rule.get("rule_uid", "unknown"),
+            "source_issue_uid": rule.get("source_issue_uid", "unknown"),
+            "target": rule.get("target", "unknown"),
+            "executor_type": rule.get("executor_type", "unknown"),
+            "executed_at": now_utc(),
+            "result": "error",
+            "summary": f"rule schema validation failed: {exc}",
+            "detail": {"error": str(exc)},
+            "next_action": "fix_regression_rule_asset",
+        }
+
+    executor_type = rule.get("executor_type")
+    if executor_type == "schema_validation":
+        outcome = run_schema_validation_rule(rule)
+    else:
+        outcome = {
+            "result": "skipped",
+            "summary": f"unsupported executor_type: {executor_type}",
+            "detail": None,
+        }
+
+    result = outcome["result"]
+    if result == "pass":
+        next_action = "none"
+    elif result == "fail":
+        next_action = "handoff_required"
+    elif result == "skipped":
+        next_action = "executor_not_supported"
+    else:
+        next_action = "executor_error"
+
+    return {
+        "rule_uid": rule["rule_uid"],
+        "source_issue_uid": rule["source_issue_uid"],
+        "target": rule["target"],
+        "executor_type": executor_type,
+        "executed_at": now_utc(),
+        "result": result,
+        "summary": outcome["summary"],
+        "detail": outcome.get("detail"),
+        "next_action": next_action,
+    }
+
+
+def cmd_run_regression(args):
+    rules = load_regression_rules(args.rules)
+    results = []
+    for rule in rules:
+        result = run_regression_rule(rule)
+        if result is not None:
+            results.append(result)
+
+    root = Path(args.artifact_root)
+    root.mkdir(parents=True, exist_ok=True)
+    artifact_path = root / f"{dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ')}_regression_run.json"
+    payload = {
+        "schema": "regression_executor_mvp",
+        "written_at": now_utc(),
+        "data": {
+            "source": str(args.rules),
+            "active_rule_count": len(results),
+            "results": results,
+        },
+    }
+    artifact_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    readback(artifact_path)
+    validate(payload["data"], load_schema("regression_executor_result"), load_common_defs())
+
+    if not results:
+        overall_result = "skipped"
+    elif all(item["result"] == "pass" for item in results):
+        overall_result = "pass"
+    else:
+        overall_result = "fail"
+
+    output = {
+        "result": overall_result,
+        "source": str(args.rules),
+        "active_rule_count": len(results),
+        "artifact_path": relative_to_root(artifact_path),
+        "evidence_pointer": f"file://{relative_to_root(artifact_path)}",
+        "readback_status": "pass",
+        "results": results,
+    }
+    print(json.dumps(output, ensure_ascii=False, indent=2))
+
+
 def build_parser():
     parser = argparse.ArgumentParser(description="Minimal Harness v4 schema runner")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -222,6 +373,10 @@ def build_parser():
     run_parser.add_argument("--input", required=True, help="JSON input file")
     run_parser.add_argument("--artifact-root", default=str(DEFAULT_ARTIFACT_ROOT), help="Artifact output directory")
 
+    regression_parser = sub.add_parser("run-regression", help="Run active regression rules")
+    regression_parser.add_argument("--rules", required=True, help="Regression rule JSON file")
+    regression_parser.add_argument("--artifact-root", default=str(ROOT / "artifacts" / "regression"), help="Artifact output directory")
+
     return parser
 
 
@@ -235,6 +390,8 @@ def main(argv=None):
             cmd_validate(args)
         elif args.command == "run":
             cmd_run(args)
+        elif args.command == "run-regression":
+            cmd_run_regression(args)
         else:
             parser.error(f"unknown command: {args.command}")
     except (ValidationError, json.JSONDecodeError, OSError) as exc:

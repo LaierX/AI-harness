@@ -1,4 +1,4 @@
-# Harness v4 模块化规范套件 v4.4.0
+# Harness v4 模块化规范套件 v4.5.0
 
 本目录为 Harness v4 的模块化规范套件。
 
@@ -30,6 +30,7 @@
 - `v4.2.1`：收紧横切模块边界、门控顺序、副作用约束、memory 写入条件与 pointer 回读口径
 - `v4.3.0`：新增 JSON Schema 机器校验层与 schema 模块
 - `v4.4.0`：新增 minimal runner，跑通 schema validation / artifact write / readback
+- `v4.5.0`：新增 regression executor MVP，跑通 active rule / schema_validation / result artifact / evidence pointer
 
 ## 说明
 - `README.md` 仅供人类快速查看，不作为执行体权威入口

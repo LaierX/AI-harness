@@ -1,8 +1,8 @@
-# 🧠 Harness v4 模块化规范套件 v4.4.0
+# 🧠 Harness v4 模块化规范套件 v4.5.0
 
 > 目标：提供一套可由 Hermes / Agent「智能体」直接读取、装配与执行的 Harness v4 模块化规范。
 > 定位：本套件为 v4 的目录化版本；保留 workflow「流程」主线，同时把能力拆为 module「模块」与 controller「控制器」。
-> 本版更新：新增 Minimal Runner，跑通 schema 校验、artifact 写入与 readback 的最小本地可执行路径。
+> 本版更新：新增 Regression Executor MVP，跑通 active rule 读取、schema_validation worker、结果 artifact 与 evidence pointer。
 
 ---
 
@@ -22,30 +22,31 @@
 继续阅读：
 9. `06_REGRESSION_ASSET_MODULE.md`
 10. `07_REGRESSION_EXECUTOR_MODULE.md`
+11. `examples/regression_rule.schema_validation.active.json`
 
 ### 如需规范治理
 最后阅读：
-11. `08_GOVERNANCE_MODULE.md`
+12. `08_GOVERNANCE_MODULE.md`
 
 ### 如需工程变更 / 环境处理 / 调试能力
 按需附加：
-12. `04G_DEVELOPMENT_MODULE.md`
-13. `04H_INSTALLATION_MODULE.md`
-14. `04I_DEPLOYMENT_MODULE.md`
-15. `04J_DEBUG_MODULE.md`
+13. `04G_DEVELOPMENT_MODULE.md`
+14. `04H_INSTALLATION_MODULE.md`
+15. `04I_DEPLOYMENT_MODULE.md`
+16. `04J_DEBUG_MODULE.md`
 
 ### 如需跨运行记忆或环境适配
 按需附加：
-16. `03A_MEMORY_LAYER_MODULE.md`
-17. `11_RUNTIME_ADAPTER_MODULE.md`
+17. `03A_MEMORY_LAYER_MODULE.md`
+18. `11_RUNTIME_ADAPTER_MODULE.md`
 
 ### 如需机器校验 / runner 接入
 按需附加：
-18. `12_SCHEMAS_MODULE.md`
-19. `schemas/`
-20. `13_MINIMAL_RUNNER_MODULE.md`
-21. `runner/`
-22. `examples/`
+19. `12_SCHEMAS_MODULE.md`
+20. `schemas/`
+21. `13_MINIMAL_RUNNER_MODULE.md`
+22. `runner/`
+23. `examples/`
 
 ---
 
@@ -102,6 +103,8 @@ Harness v4
 - L3 强结构对象必须通过对应 `schemas/*.schema.json` 校验后，才允许进入完整闭环资产。
 - Minimal Runner 只执行 schema 校验、artifact 写入与 readback，不推进 workflow_state。
 - runner readback 通过只证明 artifact 可定位、可解析，不等于 Record Gate 通过。
+- Regression Executor MVP 只执行 `status = active` 的 rule；当前只支持安全的 `schema_validation` worker。
+- Regression Executor MVP 必须写入 result artifact，并返回 evidence pointer；`fail` / `error` 不触发自动修复。
 - `04G~04J` 为 optional capability modules；它们可以被调用，但不单独构成新的 workflow_state。
 - optional capability modules 退出前仍必须通过 Record Gate「记录出口守卫」。
 
@@ -137,10 +140,12 @@ Harness v4
 - `10_CHANGELOG_v4.2.1.md`
 - `10_CHANGELOG_v4.3.0.md`
 - `10_CHANGELOG_v4.4.0.md`
+- `10_CHANGELOG_v4.5.0.md`
 - `11_RUNTIME_ADAPTER_MODULE.md`
 - `12_SCHEMAS_MODULE.md`
 - `13_MINIMAL_RUNNER_MODULE.md`
 - `examples/`
+- `examples/regression_rule.schema_validation.active.json`
 - `runner/`
 - `schemas/`
 
@@ -179,6 +184,7 @@ Harness v4
   10_CHANGELOG_v4.2.1.md
   10_CHANGELOG_v4.3.0.md
   10_CHANGELOG_v4.4.0.md
+  10_CHANGELOG_v4.5.0.md
   11_RUNTIME_ADAPTER_MODULE.md
   12_SCHEMAS_MODULE.md
   13_MINIMAL_RUNNER_MODULE.md
@@ -199,6 +205,7 @@ Harness v4
 - 需要低副作用调试与探针：再读取 `04J_DEBUG_MODULE.md`
 - 完整闭环：再读取 `Closing Module`
 - 长期巡检：再读取 `Regression Asset + Regression Executor`
+- 需要本地回归执行 MVP：再读取 `Regression Executor + Minimal Runner + examples/regression_rule.schema_validation.active.json`
 - 需要跨 run 经验复用：再读取 `Memory Layer`
 - 需要接入具体文件、命令、浏览器、数据库、CI 或发布环境：再读取 `Runtime Adapter`
 - 需要机器校验、runner 接入或强结构闭环：再读取 `Schemas Module + schemas/`
