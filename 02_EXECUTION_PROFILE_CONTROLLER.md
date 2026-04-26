@@ -65,7 +65,7 @@
 - `1` = 中
 - `2` = 高
 
-### 2.2 建议判定
+### 2.2 默认判定
 - 总分 `0~1` → L1
 - 总分 `2~3` → L2
 - 总分 `>=4` → L3
@@ -80,6 +80,45 @@
 - 无法安全回滚
 - 生产环境部署或切流量
 - 高风险安装或不可逆环境修改
+
+### 2.4 执行中升级规则
+
+Execution Profile 可以在 run 中升级，但不得无记录地降级。
+
+#### L1 → L2 触发条件
+满足任意一条，必须从 L1 升级到 L2：
+- 需要跨 step 推进，而不是单点 probe
+- 需要正式工具调用、文件写入、环境变更或可追踪 artifact
+- 证据来源超过单一来源，且需要 checklist 管理
+- 发现原始假设不稳定，需要记录替代假设
+- 用户目标从“看一下 / 判断一下”变成“处理 / 修复 / 验证”
+
+#### L2 → L3 触发条件
+满足任意一条，必须从 L2 升级到 L3：
+- 命中 2.3 中任一直接 L3 条件
+- `side_effect_level = high`
+- 需要完整 Closing、长期 regression rule 或 memory write
+- 已发生回退、污染、不可回读证据或 schema_drift
+- 需要自动化 runner / regression executor 参与闭环
+
+#### 禁止降级条件
+满足任意一条，不得从 L3 降级到 L2 / L1，也不得从 L2 降级到 L1：
+- 已执行 `medium` 或 `high` 副作用工具调用
+- 已进入 `fixing`、`verifying` 或 `closing`
+- 已创建 regression rule / memory entry / release artifact
+- 已发生 rollback route decision
+- 当前 run 已被外部审计、CI、发布或长期记录引用
+
+#### 中途升级补记要求
+发生 profile 升级后，必须补记：
+- 升级前后的 `execution_profile`
+- `upgrade_trigger`
+- 新增必装模块
+- 旧记录与新 profile 要求之间的 gap
+- 补齐后的 execution plan / checklist / step snapshot
+- L3 下对应强结构对象的 schema validation 结果
+
+补记完成并通过 Record Gate 前，不得继续推进 workflow_state。
 
 ---
 

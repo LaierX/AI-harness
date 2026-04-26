@@ -1,0 +1,28 @@
+{
+  "tool_uid": "tool-schema-validator",
+  "tool_name": "harness_runner validate",
+  "tool_type": "read_only",
+  "owner_module": "13_MINIMAL_RUNNER_MODULE.md",
+  "input_schema": {
+    "schema": "string",
+    "input": "path"
+  },
+  "output_schema": {
+    "result": "pass|fail",
+    "schema": "string",
+    "input": "path"
+  },
+  "side_effect_level": "none",
+  "minimum_execution_profile": "L1",
+  "timeout_policy": "Local validation should finish within the invoking runner timeout.",
+  "retry_policy": "Retry only after fixing schema or fixture input.",
+  "failure_modes": [
+    "schema_not_found",
+    "json_parse_failed",
+    "validation_failed"
+  ],
+  "rollback_hint": "No rollback required for read-only validation.",
+  "evidence_output": "Validation stdout and optional artifact path.",
+  "artifact_output": "Only produced by the run command, not validate.",
+  "readback_method": "json_load"
+}

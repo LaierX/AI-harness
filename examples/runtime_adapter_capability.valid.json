@@ -1,0 +1,24 @@
+{
+  "adapter_uid": "adapter-runner-demo",
+  "adapter_name": "Minimal Runner",
+  "adapter_type": "file",
+  "supported_tool_types": [
+    "read_only",
+    "local_write"
+  ],
+  "pointer_scheme": [
+    "file",
+    "artifact"
+  ],
+  "artifact_root": "artifacts/runner",
+  "environment_scope": "local repository workspace",
+  "pointer_minimum_fields": [
+    "pointer_type",
+    "pointer_value",
+    "created_at",
+    "producer_adapter_uid",
+    "readback_method"
+  ],
+  "failure_surface": "Local file read, write, JSON parse, or schema validation error.",
+  "readback_method": "json_load"
+}

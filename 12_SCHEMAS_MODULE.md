@@ -97,6 +97,27 @@ Schemas Module 是结构校验资产模块，不构成新的 workflow_state「�
 - `schemas/regression_executor_result.schema.json`
 - `schemas/governance_review_checklist.schema.json`
 
+### 3.6 Valid Examples 覆盖
+
+每个非公共 schema 必须至少有一个最小 valid example：
+
+- `examples/execution_plan.valid.json`
+- `examples/step_snapshot.valid.json`
+- `examples/capability_module_snapshot.valid.json`
+- `examples/closing_summary.valid.json`
+- `examples/context_assembly_snapshot.valid.json`
+- `examples/tool_contract.valid.json`
+- `examples/tool_call_snapshot.valid.json`
+- `examples/memory_entry.valid.json`
+- `examples/evidence_pointer.valid.json`
+- `examples/runtime_adapter_capability.valid.json`
+- `examples/runtime_adapter_snapshot.valid.json`
+- `examples/regression_rule.schema_validation.active.json`
+- `examples/regression_executor_result.valid.json`
+- `examples/governance_review_checklist.valid.json`
+
+新增或修改 schema required 字段时，必须同步更新对应 valid example，并通过 Minimal Runner 校验。
+
 ---
 
 ## 四、校验规则
@@ -167,6 +188,7 @@ Governance Module 应定期检查：
 - JSON Schema 中枚举是否与 Kernel Module 口径一致
 - required 字段是否低于对应模块的最小输出要求
 - schema 是否引用了不存在的 `$defs`
+- 每个非公共 schema 是否存在对应 valid example，且能通过 runner 校验
 - L3 闭环资产是否存在未校验结构
 - runner 是否仍覆盖当前 schema 使用的 JSON Schema 子集
 

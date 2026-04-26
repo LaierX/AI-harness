@@ -1,0 +1,14 @@
+{
+  "run_uid": "run-v4.5.1-demo",
+  "issue_uid": "issue-v4.5.1-demo",
+  "workflow_state": "closing",
+  "lifecycle_state": "closed",
+  "primary_record_db": "artifacts/runner/demo-primary-record.json",
+  "narrative_path": "examples/closing_summary.valid.json",
+  "rule_required": false,
+  "rule_reason": "Fixture-only validation run does not create a long-term regression rule.",
+  "rule_location": "not_required",
+  "close_summary": "Validated v4.5.1 minimal closing summary fixture.",
+  "readback_status": "pass",
+  "schema_version": "v4.5.1"
+}

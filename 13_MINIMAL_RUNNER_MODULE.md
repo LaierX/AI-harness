@@ -38,7 +38,11 @@ runner/harness_runner.py
 ```text
 examples/execution_plan.valid.json
 examples/step_snapshot.valid.json
+examples/*.valid.json
+examples/regression_rule.schema_validation.active.json
 ```
+
+v4.5.1 起，每个非公共 schema 必须至少有一个可由 runner 校验通过的 valid example。
 
 本地运行产物默认写入：
 
@@ -64,6 +68,20 @@ python3 runner/harness_runner.py list-schemas
 python3 runner/harness_runner.py validate \
   --schema execution_plan \
   --input examples/execution_plan.valid.json
+```
+
+每个 schema 的 valid example 都应使用同一命令模式校验：
+
+```bash
+python3 runner/harness_runner.py validate \
+  --schema <schema_name> \
+  --input examples/<schema_name>.valid.json
+```
+
+`regression_rule` 的示例文件为：
+
+```text
+examples/regression_rule.schema_validation.active.json
 ```
 
 成功时输出：

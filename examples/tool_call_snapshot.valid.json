@@ -1,0 +1,21 @@
+{
+  "run_uid": "run-v4.5.1-demo",
+  "issue_uid": "issue-v4.5.1-demo",
+  "workflow_state": "observing",
+  "module_name": "Evidence Intake Module",
+  "module_mode": "probe",
+  "tool_uid": "tool-schema-validator",
+  "tool_name": "harness_runner validate",
+  "input_summary": "Validate a fixture against evidence_pointer schema.",
+  "output_summary": "Validation passed.",
+  "side_effect_level": "none",
+  "profile_check_result": "pass",
+  "context_gate_result": "pass",
+  "artifact_or_log_pointer": "artifacts/runner/demo-tool-call.json",
+  "evidence_pointer": "examples/evidence_pointer.valid.json",
+  "failure_type": null,
+  "exit_code": 0,
+  "retry_count": 0,
+  "decision": "Use fixture as schema example coverage evidence.",
+  "readback_status": "pass"
+}

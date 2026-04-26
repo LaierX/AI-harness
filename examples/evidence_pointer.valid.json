@@ -1,0 +1,12 @@
+{
+  "pointer_type": "artifact",
+  "pointer_value": "artifacts/runner/demo-evidence.json",
+  "created_at": "2026-04-26T00:00:00Z",
+  "producer_adapter_uid": "adapter-runner-demo",
+  "readback_method": "json_load",
+  "stability": "stable",
+  "time_range": null,
+  "query_or_filter": null,
+  "retention_note": "Demo evidence retained with fixture set.",
+  "checksum": null
+}

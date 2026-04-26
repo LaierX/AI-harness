@@ -1,0 +1,27 @@
+{
+  "review_uid": "review-v4.5.1-demo",
+  "review_scope": "Harness v4.5.1 reliability and governance patch",
+  "evidence_range": [
+    "00_INDEX.md",
+    "04X_ROLLBACK_ROUTER_MODULE.md",
+    "examples/*.valid.json"
+  ],
+  "naming_drift_checked": true,
+  "workflow_lifecycle_state_checked": true,
+  "record_gate_bypass_checked": true,
+  "regression_asset_executor_checked": true,
+  "narrative_db_consistency_checked": true,
+  "context_assembly_checked": true,
+  "tool_contract_checked": true,
+  "memory_layer_checked": true,
+  "runtime_adapter_checked": true,
+  "spec_gap": "No blocking gap in the v4.5.1 patch scope.",
+  "context_gap": "No blocking context gap in the fixture scope.",
+  "tool_contract_gap": "No blocking tool contract gap in the fixture scope.",
+  "memory_gap": "No blocking memory gap in the fixture scope.",
+  "runtime_adapter_gap": "No blocking runtime adapter gap in the fixture scope.",
+  "recommended_version": "v4.5.1",
+  "recommended_patch_target": "Formal module files and examples directory.",
+  "readback_status": "pass",
+  "schema_version": "v4.5.1"
+}

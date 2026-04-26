@@ -1,0 +1,21 @@
+{
+  "source": "examples/regression_rule.schema_validation.active.json",
+  "active_rule_count": 1,
+  "results": [
+    {
+      "rule_uid": "rule-v4.5-schema-validation",
+      "source_issue_uid": "issue-v4.5-demo",
+      "target": "examples/execution_plan.valid.json",
+      "executor_type": "schema_validation",
+      "executed_at": "2026-04-26T00:00:00Z",
+      "result": "pass",
+      "summary": "validated examples/execution_plan.valid.json against execution_plan",
+      "detail": {
+        "schema": "execution_plan",
+        "input": "examples/execution_plan.valid.json"
+      },
+      "next_action": "none"
+    }
+  ],
+  "schema_version": "v4.5.1"
+}

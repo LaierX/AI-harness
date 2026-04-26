@@ -1,0 +1,18 @@
+{
+  "memory_uid": "memory-v4.5.1-demo",
+  "memory_type": "procedural",
+  "status": "active",
+  "source_run_uid": "run-v4.5.1-demo",
+  "source_issue_uid": "issue-v4.5.1-demo",
+  "source_pointer": "examples/closing_summary.valid.json",
+  "summary": "Use 00_INDEX.md as the execution entry and keep 00_ENTRYPOINT_SINGLE_FILE.md reference-only.",
+  "applicability": "Harness v4 module assembly and governance reviews.",
+  "confidence": "high",
+  "freshness": "current",
+  "invalidation_condition": "A future index explicitly replaces the execution entry.",
+  "write_trigger": "governance_review_confirmed",
+  "review_after": null,
+  "owner": "harness-governance",
+  "created_at": "2026-04-26T00:00:00Z",
+  "updated_at": "2026-04-26T00:00:00Z"
+}

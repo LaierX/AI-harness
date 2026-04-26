@@ -1,8 +1,8 @@
-# 🧠 Harness v4 模块化规范套件 v4.5.0
+# 🧠 Harness v4 模块化规范套件 v4.5.1
 
 > 目标：提供一套可由 Hermes / Agent「智能体」直接读取、装配与执行的 Harness v4 模块化规范。
 > 定位：本套件为 v4 的目录化版本；保留 workflow「流程」主线，同时把能力拆为 module「模块」与 controller「控制器」。
-> 本版更新：新增 Regression Executor MVP，跑通 active rule 读取、schema_validation worker、结果 artifact 与 evidence pointer。
+> 本版更新：补强 rollback router、issue reuse、execution profile 升级规则、治理阻断条件与关键 schema valid examples。
 
 ---
 
@@ -16,37 +16,38 @@
 5. `02B_TOOL_CONTRACT_REGISTRY.md`
 6. `03_RECORD_AND_EVIDENCE_MODULE.md`
 7. `04_RUN_ENGINE_ENTRY.md`
-8. `05_CLOSING_MODULE.md`
+8. `04X_ROLLBACK_ROUTER_MODULE.md`
+9. `05_CLOSING_MODULE.md`
 
 ### 如需长期防复发
 继续阅读：
-9. `06_REGRESSION_ASSET_MODULE.md`
-10. `07_REGRESSION_EXECUTOR_MODULE.md`
-11. `examples/regression_rule.schema_validation.active.json`
+10. `06_REGRESSION_ASSET_MODULE.md`
+11. `07_REGRESSION_EXECUTOR_MODULE.md`
+12. `examples/regression_rule.schema_validation.active.json`
 
 ### 如需规范治理
 最后阅读：
-12. `08_GOVERNANCE_MODULE.md`
+13. `08_GOVERNANCE_MODULE.md`
 
 ### 如需工程变更 / 环境处理 / 调试能力
 按需附加：
-13. `04G_DEVELOPMENT_MODULE.md`
-14. `04H_INSTALLATION_MODULE.md`
-15. `04I_DEPLOYMENT_MODULE.md`
-16. `04J_DEBUG_MODULE.md`
+14. `04G_DEVELOPMENT_MODULE.md`
+15. `04H_INSTALLATION_MODULE.md`
+16. `04I_DEPLOYMENT_MODULE.md`
+17. `04J_DEBUG_MODULE.md`
 
 ### 如需跨运行记忆或环境适配
 按需附加：
-17. `03A_MEMORY_LAYER_MODULE.md`
-18. `11_RUNTIME_ADAPTER_MODULE.md`
+18. `03A_MEMORY_LAYER_MODULE.md`
+19. `11_RUNTIME_ADAPTER_MODULE.md`
 
 ### 如需机器校验 / runner 接入
 按需附加：
-19. `12_SCHEMAS_MODULE.md`
-20. `schemas/`
-21. `13_MINIMAL_RUNNER_MODULE.md`
-22. `runner/`
-23. `examples/`
+20. `12_SCHEMAS_MODULE.md`
+21. `schemas/`
+22. `13_MINIMAL_RUNNER_MODULE.md`
+23. `runner/`
+24. `examples/`
 
 ---
 
@@ -62,6 +63,7 @@ Harness v4
 ├── Memory Layer Module「记忆层模块」
 ├── Run Engine「运行引擎」
 │   ├── Step Orchestrator「步骤编排器」
+│   ├── Rollback Router「回退路由器」
 │   ├── Observing Modules「观察模块组」
 │   ├── Reproducing Modules「复现模块组」
 │   ├── Isolating Modules「隔离模块组」
@@ -93,6 +95,7 @@ Harness v4
 - `checks.result` 与 `regression_rule_runs.result` 不共享枚举。
 - Context Controller 不推进 workflow_state；它只负责上下文装配、裁剪、恢复与防漂移。
 - Context Gate 是进入工具调用或模型决策前的前置门；Record Gate 是步骤或模块退出前的出口门。
+- Rollback Router 不推进 workflow_state；所有 step failure 在继续、暂停或回退前必须先选择唯一 route。
 - Tool Contract Registry 不执行工具；它只定义工具契约、边界、产物与回读要求。
 - L2 / L3 正式工具调用必须引用 Tool Contract，并通过 Runtime Adapter 产出可回读 pointer。
 - Memory Layer 不替代 primary record db；记忆只能辅助决策，不能覆盖当前证据。
@@ -129,6 +132,7 @@ Harness v4
 - `04H_INSTALLATION_MODULE.md`
 - `04I_DEPLOYMENT_MODULE.md`
 - `04J_DEBUG_MODULE.md`
+- `04X_ROLLBACK_ROUTER_MODULE.md`
 - `05_CLOSING_MODULE.md`
 - `06_REGRESSION_ASSET_MODULE.md`
 - `07_REGRESSION_EXECUTOR_MODULE.md`
@@ -141,6 +145,7 @@ Harness v4
 - `10_CHANGELOG_v4.3.0.md`
 - `10_CHANGELOG_v4.4.0.md`
 - `10_CHANGELOG_v4.5.0.md`
+- `10_CHANGELOG_v4.5.1.md`
 - `11_RUNTIME_ADAPTER_MODULE.md`
 - `12_SCHEMAS_MODULE.md`
 - `13_MINIMAL_RUNNER_MODULE.md`
@@ -173,6 +178,7 @@ Harness v4
   04H_INSTALLATION_MODULE.md
   04I_DEPLOYMENT_MODULE.md
   04J_DEBUG_MODULE.md
+  04X_ROLLBACK_ROUTER_MODULE.md
   05_CLOSING_MODULE.md
   06_REGRESSION_ASSET_MODULE.md
   07_REGRESSION_EXECUTOR_MODULE.md
@@ -185,6 +191,7 @@ Harness v4
   10_CHANGELOG_v4.3.0.md
   10_CHANGELOG_v4.4.0.md
   10_CHANGELOG_v4.5.0.md
+  10_CHANGELOG_v4.5.1.md
   11_RUNTIME_ADAPTER_MODULE.md
   12_SCHEMAS_MODULE.md
   13_MINIMAL_RUNNER_MODULE.md
@@ -199,6 +206,7 @@ Harness v4
 
 - 普通快速检查：读取 `Kernel + Execution Profile + Context + Tool Contract + Record + Run Engine`
 - 一般排障：再读取全部 `04A~04F` 模块
+- 发生 step failure 或需要回退决策：读取 `04X_ROLLBACK_ROUTER_MODULE.md`
 - 需要代码/配置变更实现：再读取 `04G_DEVELOPMENT_MODULE.md`
 - 需要装环境或装依赖：再读取 `04H_INSTALLATION_MODULE.md`
 - 需要发版、切流量、做回滚：再读取 `04I_DEPLOYMENT_MODULE.md`

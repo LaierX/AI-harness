@@ -9,7 +9,8 @@
 
 ### 1.1 Bootstrap Module「引导初始化模块」
 职责：
-- 生成 `run_uid / issue_uid`
+- 生成 `run_uid`
+- 复用或生成 `issue_uid`
 - 创建主过程文档
 - 写入文档首部元数据
 - 初始化最小记录（L3 强制）
@@ -38,14 +39,32 @@
 
 ### 2.1 L3 强制原子初始化顺序
 在 L3 下，Bootstrap Module 必须按以下顺序一次性完成，不得乱序：
-1. 生成 `run_uid / issue_uid`（仅内存态）
-2. 创建主过程文档
-3. 写入文档首部元数据
-4. 初始化最小记录
-5. 回读主过程文档
-6. 回读最小记录
+1. 生成 `run_uid`（仅内存态）
+2. 执行 issue matching，决定复用或生成 `issue_uid`
+3. 创建主过程文档
+4. 写入文档首部元数据
+5. 初始化最小记录
+6. 回读主过程文档
+7. 回读最小记录
 
-仅当以上 1~6 全部成功，任务才算正式进入 `observing`。
+仅当以上 1~7 全部成功，任务才算正式进入 `observing`。
+
+### 2.1.1 Issue Matching「问题复用匹配」
+Bootstrap 不得默认新建 issue。每次普通 run 启动时，必须按以下优先级判断：
+1. `source_issue_uid` 或用户指定 `issue_uid` 精确命中
+2. fingerprint「指纹」精确命中
+3. target + symptom「目标 + 症状」高度相似，且未发现冲突证据
+4. 均未命中或存在歧义时，生成新 `issue_uid`
+
+匹配结果必须写入 `issue_match_result`，至少包含：
+- `match_method`
+- `matched_issue_uid`（如有）
+- `confidence`
+- `conflict_evidence`（如有）
+- `decision = reuse | create_new | pause_for_review`
+- `evidence_pointer`
+
+若命中多个候选且无法自动裁决，L2 / L3 必须暂停或进入人工复核，不得静默新建 issue。
 
 ### 2.2 失败即停
 若原子序列任一步失败：
@@ -77,6 +96,7 @@
 - 问题可被客观复述
 - 至少形成一组有效事实
 - 当前目标已明确
+- `issue_match_result` 已写入
 - Record Gate 已通过
 
 ### 3.1 推荐证据下限
@@ -91,4 +111,5 @@
 - evidence list
 - initial scope
 - bootstrap result
+- issue_match_result
 - next step = `reproducing`

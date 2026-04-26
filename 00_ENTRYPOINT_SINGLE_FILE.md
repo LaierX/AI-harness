@@ -1,8 +1,8 @@
-# 🧠 Harness v4 模块化控制规范（可执行版）
+# 🧠 Harness v4 模块化控制规范（历史总版参考）
 
-> 目标：构建一套可由 Agent「智能体」直接执行、可模块装配、可审计、可回放、可闭环的 Harness v4 规范。  
-> 定位：本文件为 v4 的主入口「entrypoint 总入口」+ 可执行规范「executable spec 可执行规范」。  
-> 原则：不推翻 v3，而是在 v3 已有的总则、等级、状态机、Step 7、回归规则与执行器基础上，升级为模块化体系。
+> 状态：参考文件。正式执行入口只能使用 `00_INDEX.md` 与正式模块文件。
+> 禁止：不得把本文件作为 prompt、cron、profile、runner 或 agent 装配入口。
+> 说明：本文件保留为历史总版对照；若与模块版不一致，以 `00_INDEX.md` 与对应模块文件为准。
 
 ---
 
@@ -994,10 +994,12 @@ runner 校验通过不等于 Record Gate 通过；artifact readback 通过只证
 
 # 十八、v4 推荐目录结构
 
+> 历史参考：当前模块版正式落盘结构以 `00_INDEX.md` 为准。
+
 ```text
 /harness-v4/
   00-entry/
-    Harness v4 模块化控制规范（可执行版）.md
+    Harness v4 模块化控制规范（历史总版参考）.md
 
   01-kernel/
     kernel-spec.md

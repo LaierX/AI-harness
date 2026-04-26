@@ -1,0 +1,27 @@
+{
+  "run_uid": "run-v4.5.1-demo",
+  "issue_uid": "issue-v4.5.1-demo",
+  "assembly_mode": "run_bootstrap",
+  "workflow_state": "observing",
+  "module_name": "Bootstrap Module",
+  "module_mode": "in_workflow",
+  "objective": "Assemble minimal context for a v4.5.1 schema fixture validation run.",
+  "injected_context": [
+    "00_INDEX.md is the execution entry.",
+    "04X_ROLLBACK_ROUTER_MODULE.md is available for rollback decisions."
+  ],
+  "pointer_only_context": [
+    "examples/evidence_pointer.valid.json"
+  ],
+  "excluded_context": [
+    "00_ENTRYPOINT_SINGLE_FILE.md is reference-only."
+  ],
+  "stale_or_tentative_items": [],
+  "memory_conflicts": [],
+  "gate_sequence": [
+    "context_gate",
+    "record_gate"
+  ],
+  "context_gate_result": "pass",
+  "readback_status": "pass"
+}

@@ -1,0 +1,18 @@
+{
+  "step": "fixing",
+  "module_name": "Development Module",
+  "module_mode": "change_execution",
+  "objective": "Record a minimal capability module snapshot for schema coverage.",
+  "action_summary": "Created v4.5.1 governance fixtures and updated module documentation.",
+  "key_evidence": [
+    "Runner validation passed",
+    "Record Gate remains required before exit"
+  ],
+  "evidence_pointer": "examples/evidence_pointer.valid.json",
+  "artifact_or_log_pointer": "artifacts/runner/demo-capability-module.json",
+  "risk_note": "Fixture-only example; no production side effect.",
+  "decision": "Capability module snapshot schema is covered by a valid fixture.",
+  "next_or_rollback": "Proceed to verifying.",
+  "readback_status": "pass",
+  "schema_version": "v4.5.1"
+}

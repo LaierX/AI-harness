@@ -1,0 +1,15 @@
+{
+  "run_uid": "run-v4.5.1-demo",
+  "issue_uid": "issue-v4.5.1-demo",
+  "adapter_uid": "adapter-runner-demo",
+  "adapter_name": "Minimal Runner",
+  "tool_uid": "tool-schema-validator",
+  "action_summary": "Validated fixture with runner/harness_runner.py.",
+  "output_summary": "Validation passed and artifact was readable.",
+  "artifact_or_log_pointer": "artifacts/runner/demo-runtime-adapter.json",
+  "evidence_pointer": "examples/evidence_pointer.valid.json",
+  "pointer_unavailable_reason": null,
+  "failure_surface": null,
+  "cleanup_hint": null,
+  "readback_status": "pass"
+}

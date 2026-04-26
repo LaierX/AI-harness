@@ -15,7 +15,7 @@ Governance Module 负责：
 - 规范反审
 - 周期性 Cron 治理任务
 - 规范缺口识别
-- v4.x 迭代建议
+- v4.x 迭代决策建议
 
 ---
 
@@ -29,7 +29,7 @@ Governance Module 负责：
 
 ## 三、反审任务
 
-建议周期性执行以下任务：
+正式治理反审必须执行以下任务：
 - 检查字段命名漂移
 - 检查流程态与结果态是否混用
 - 检查 Record Gate 是否被绕过
@@ -42,19 +42,21 @@ Governance Module 负责：
 - 检查 Markdown 模板与 JSON Schema 是否字段漂移
 - 检查 schema required 字段是否低于对应模块的最小输出要求
 - 检查 schema 是否引用不存在的 `$defs`
+- 检查执行 prompt、cron、profile、runner 文档是否把 `00_ENTRYPOINT_SINGLE_FILE.md` 当作正式执行入口
 
-执行反审时，建议使用 `09_TEMPLATES.md` 中的 Governance Review Checklist「治理反审清单」模板。
+执行反审时，必须使用 `09_TEMPLATES.md` 中的 Governance Review Checklist「治理反审清单」模板或对应 JSON Schema 结构。
 
 ---
 
-## 四、建议输出
+## 四、正式输出
 
 每次正式反审至少输出：
 - 本轮证据范围
 - 暴露出的规范缺口
 - 为什么它属于规范问题而不是单次实现失误
-- 建议进入的 v4.x 版本
-- 建议补强位置
+- 进入的 v4.x 候选版本
+- 必须补强的位置
+- 是否阻断 L3 完整闭环
 
 ### 4.1 v4.2 横切模块反审补充
 
@@ -73,6 +75,15 @@ Governance Module 负责：
 - broken_schema_ref
 - recommended_schema_version
 
+### 4.3 v4.5.1 治理阻断条件
+
+满足任意一条时，必须阻断 L3 完整闭环，直到补齐记录或修正规范：
+- `schema_drift` 未处理
+- Markdown template 与 JSON Schema required 字段不一致
+- L3 强结构对象缺少 valid example 或校验结果
+- patch 长期承担主规范职责，且未合入正式模块
+- `00_ENTRYPOINT_SINGLE_FILE.md` 被执行入口、cron、profile 或 runner 当作权威入口引用
+
 ---
 
 ## 五、禁止事项
@@ -80,3 +91,4 @@ Governance Module 负责：
 - 不得直接把分析结果伪装成“规范已正式更新”
 - 不得让 patch 长期替代正式模块
 - 不得把某次偶发实现错误直接上升为规范缺陷
+- 不得在发现 schema/template drift 后继续宣称 L3 完整闭环
