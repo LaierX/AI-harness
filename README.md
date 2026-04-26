@@ -1,4 +1,4 @@
-# Harness v4 模块化规范套件 v4.1.1
+# Harness v4 模块化规范套件 v4.2.0
 
 本目录为 Harness v4 的模块化规范套件。
 
@@ -9,14 +9,19 @@
 - `00_ENTRYPOINT_SINGLE_FILE.md`（仅用于整体对照与阅读，不作为执行依据）
 
 ## 新增能力模块
+- `02A_CONTEXT_CONTROLLER_MODULE.md`
+- `02B_TOOL_CONTRACT_REGISTRY.md`
+- `03A_MEMORY_LAYER_MODULE.md`
 - `04G_DEVELOPMENT_MODULE.md`
 - `04H_INSTALLATION_MODULE.md`
 - `04I_DEPLOYMENT_MODULE.md`
 - `04J_DEBUG_MODULE.md`
+- `11_RUNTIME_ADAPTER_MODULE.md`
 
 ## 当前版本说明
 - `v4.1.0`：新增 development / installation / deployment / debug 四类 optional capability modules
 - `v4.1.1`：收口字段、模板、回归资产装配与 module_mode 口径
+- `v4.2.0`：新增 context / tool contract / memory / runtime adapter 四类横切模块
 
 ## 说明
 - `README.md` 仅供人类快速查看，不作为执行体权威入口

@@ -35,6 +35,10 @@ Governance Module 负责：
 - 检查 Record Gate 是否被绕过
 - 检查 regression rule 是否只创建未执行
 - 检查 narrative 与 db 是否一致
+- 检查 context assembly 是否混入过期假设或无来源结论
+- 检查 tool call 是否缺少 tool contract / artifact pointer / readback
+- 检查 memory 是否从未闭环 run 写入，或与当前证据冲突后未标记
+- 检查 runtime adapter 是否生成不可回读 pointer
 
 执行反审时，建议使用 `09_TEMPLATES.md` 中的 Governance Review Checklist「治理反审清单」模板。
 
@@ -48,6 +52,14 @@ Governance Module 负责：
 - 为什么它属于规范问题而不是单次实现失误
 - 建议进入的 v4.x 版本
 - 建议补强位置
+
+### 4.1 v4.2 横切模块反审补充
+
+涉及 Context / Tool / Memory / Runtime 的反审还应输出：
+- context_gap
+- tool_contract_gap
+- memory_gap
+- runtime_adapter_gap
 
 ---
 

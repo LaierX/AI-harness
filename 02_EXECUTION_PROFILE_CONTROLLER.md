@@ -94,6 +94,7 @@ Execution Profile Controller 负责：
 - 决定是否允许 standalone module call「单模块调用」
 - 决定是否允许 closing「闭环阶段」成立
 - 决定是否允许附加 optional capability modules「可选能力模块」
+- 决定 Context Controller / Tool Contract Registry / Memory Layer / Runtime Adapter 的装配强度
 
 ---
 
@@ -101,9 +102,9 @@ Execution Profile Controller 负责：
 
 | profile | 必装模块 | 可选模块 | 闭环要求 |
 |---|---|---|---|
-| L1 | Kernel + Record + 至少一个 Run Module | 其余 Run Modules + Debug + 局部 Development / Installation Check | 不得宣称完整闭环 |
-| L2 | Kernel + Record + Run Engine | Closing + Development + Installation + Deployment + Debug | 可进入简化闭环 |
-| L3 | Kernel + Record + Run Engine + Closing | Development + Installation + Deployment + Debug + Regression Executor | 必须完整闭环 |
+| L1 | Kernel + Context + Record + 至少一个 Run Module | Tool Contract + Runtime Adapter + 其余 Run Modules + Debug + 局部 Development / Installation Check | 不得宣称完整闭环 |
+| L2 | Kernel + Context + Tool Contract + Record + Run Engine | Closing + Memory Read + Runtime Adapter + Development + Installation + Deployment + Debug | 可进入简化闭环 |
+| L3 | Kernel + Context + Tool Contract + Record + Run Engine + Closing | Memory Read/Write + Runtime Adapter + Development + Installation + Deployment + Debug + Regression Executor | 必须完整闭环 |
 
 ### 4.1 Regression Asset 条件装配
 
@@ -115,6 +116,15 @@ Execution Profile Controller 负责：
 - 在规则资产回读成功前，不得宣称 L3 完整闭环
 
 `07_REGRESSION_EXECUTOR_MODULE.md` 仅在需要执行 active rule「激活规则」或周期性回归任务时装配，不作为每次 Closing 的默认必装模块。
+
+### 4.2 Context / Tool / Memory / Runtime 装配边界
+
+- `02A_CONTEXT_CONTROLLER_MODULE.md`：L1 / L2 / L3 均应装配，至少完成当前 objective、证据指针与过期假设裁剪。
+- `02B_TOOL_CONTRACT_REGISTRY.md`：L2 / L3 必装；L1 在调用工具时按需装配。
+- `03A_MEMORY_LAYER_MODULE.md`：L2 可只读装配；L3 在 Closing 后可写入长期 memory。
+- `11_RUNTIME_ADAPTER_MODULE.md`：当任务需要文件、命令、浏览器、数据库、日志、CI、部署或外部系统适配时装配。
+
+这些模块均不构成新的 workflow_state，也不得替代 Step Orchestrator 推进流程。
 
 ---
 

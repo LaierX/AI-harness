@@ -10,6 +10,8 @@
 ```text
 Run Engine
 ├── Step Orchestrator
+├── Context Controller
+├── Tool Contract Registry
 ├── Observing Modules
 ├── Reproducing Modules
 ├── Isolating Modules
@@ -43,14 +45,30 @@ Run Engine
 - 产出结论候选
 - 回写记录模块
 
-### 2.3 Optional Capability Modules「可选能力模块」
+### 2.3 Context Controller「上下文控制器」
+负责：
+- 在 run 启动、step 切换、module 调用与压缩恢复时装配上下文
+- 标记 pointer-only context、过期假设与暂定内容
+- 将装配结果写入 Record & Evidence Module
+
+Context Controller 不推进 workflow_state。
+
+### 2.4 Tool Contract Registry「工具契约注册表」
+负责：
+- 为工具调用提供契约、输入输出 schema、副作用等级、失败处理与证据落点
+- 为 Runtime Adapter 提供执行映射依据
+- 为 Context Controller 提供可注入工具摘要
+
+Tool Contract Registry 不直接执行工具。
+
+### 2.5 Optional Capability Modules「可选能力模块」
 负责：
 - 提供 development / installation / deployment / debug 能力
 - 支撑 Fixing / Verifying / Observing 等步骤
 - 产出工程类日志、产物与验证结果
 - 回写记录模块
 
-### 2.4 Record & Evidence Module「记录与证据模块」
+### 2.6 Record & Evidence Module「记录与证据模块」
 负责：
 - 计划
 - 快照
@@ -67,6 +85,8 @@ Run Engine
 - 单模块调用必须标记 `module_mode`。
 - `04G~04J` 不单独代表新的 workflow_state。
 - `04G~04J` 退出前仍必须通过 Record Gate。
+- Context Controller / Tool Contract Registry / Memory Layer / Runtime Adapter 不单独代表新的 workflow_state。
+- 正式 L2 / L3 工具调用必须引用 Tool Contract，并产出可回读 evidence pointer。
 
 ### 3.1 module_mode「模块调用模式」
 允许：
@@ -129,3 +149,7 @@ Run Engine
 - `04H_INSTALLATION_MODULE.md`
 - `04I_DEPLOYMENT_MODULE.md`
 - `04J_DEBUG_MODULE.md`
+- `02A_CONTEXT_CONTROLLER_MODULE.md`
+- `02B_TOOL_CONTRACT_REGISTRY.md`
+- `03A_MEMORY_LAYER_MODULE.md`
+- `11_RUNTIME_ADAPTER_MODULE.md`

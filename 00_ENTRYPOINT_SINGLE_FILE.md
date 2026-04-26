@@ -36,7 +36,10 @@ v4 采用两层结构：
 Harness v4
 ├── Kernel Module
 ├── Execution Profile Controller
+├── Context Controller Module
+├── Tool Contract Registry
 ├── Record & Evidence Module
+├── Memory Layer Module
 ├── Run Engine
 │   ├── Step Orchestrator
 │   ├── Observing Module Group
@@ -53,7 +56,8 @@ Harness v4
 ├── Closing Module
 ├── Regression Asset Module
 ├── Regression Executor Module
-└── Governance Module
+├── Governance Module
+└── Runtime Adapter Module
 ```
 
 ## 2.1 模块边界原则
@@ -64,6 +68,7 @@ Harness v4
 - **Asset Module「资产模块」**：负责长期对象结构，例如 rule「规则」、artifact「产物」、record「记录」。
 - **Executor Module「执行器模块」**：负责把长期资产跑起来。
 - **Governance Module「治理模块」**：负责版本、patch「补丁」、反审、Cron「定时任务」治理。
+- **Adapter Module「适配模块」**：负责把工具契约映射到具体运行环境，不改变 Harness 状态机。
 
 ---
 
@@ -235,6 +240,7 @@ execution profile 负责决定：
 - 是否必须落库
 - 是否必须回读
 - 是否允许 standalone module call「独立模块调用」
+- Context / Tool / Memory / Runtime 横切模块的装配强度
 
 ## 4.4 升级规则
 
@@ -254,6 +260,69 @@ execution profile 负责决定：
 
 ### 降级规则
 - 禁止从高档位降级到低档位
+
+---
+
+# 四点五、Context Controller Module「上下文控制器模块」
+
+Context Controller 是横切 controller，不构成新的 workflow_state。
+
+它负责：
+- 决定本次模型调用应注入哪些上下文
+- 决定哪些信息只保留 pointer 而不全文注入
+- 控制上下文压缩、恢复与摘要回读
+- 标记过期假设、暂定内容与 memory conflict
+- 将上下文装配结果写入 Record & Evidence Module
+
+上下文冲突时，按以下顺序裁决：
+1. primary record db
+2. 当前已回读 Step Snapshot
+3. 当前 running note / narrative
+4. 当前工具输出与 artifact
+5. long-term memory
+6. 未验证的人类备注或模型推测
+
+每次上下文装配完成后必须通过 Context Gate：
+- 当前 objective 已明确
+- 当前 workflow_state / module_mode 已明确
+- 注入内容均有来源或 pointer
+- 过期假设已标记
+- 未验证内容已标记为 tentative
+- 与当前目标无关的大段材料未全文注入
+
+Context Controller 不得推进 workflow_state，不得替代 Record Gate。
+
+---
+
+# 四点六、Tool Contract Registry「工具契约注册表」
+
+Tool Contract Registry 是横切 controller / asset 模块，不构成新的 workflow_state。
+
+它负责：
+- 登记工具能力与调用边界
+- 定义工具输入输出 schema
+- 定义副作用等级
+- 定义失败、重试、超时与回滚提示
+- 定义 artifact / evidence pointer 落点
+- 为 Runtime Adapter 提供执行映射依据
+
+每个工具契约至少包含：
+- `tool_uid`
+- `tool_name`
+- `tool_type`
+- `owner_module`
+- `input_schema`
+- `output_schema`
+- `side_effect_level`
+- `timeout_policy`
+- `retry_policy`
+- `failure_modes`
+- `rollback_hint`
+- `evidence_output`
+- `artifact_output`
+- `readback_method`
+
+工具输出不得直接等于事实结论。事实结论必须由对应 step module 或 capability module 消化后写入 Step Snapshot。
 
 ---
 
@@ -324,6 +393,10 @@ execution profile 负责决定：
 - `db_result_pointer`
 - `image_pointer`
 - `manual_note_pointer`
+- `tool_call_pointer`
+- `context_snapshot_pointer`
+- `memory_pointer`
+- `runtime_adapter_pointer`
 
 ## 5.3 Record Gate「记录出口守卫」
 
@@ -368,9 +441,36 @@ execution profile 负责决定：
 
 ---
 
+# 五点五、Memory Layer Module「记忆层模块」
+
+Memory Layer 是长期资产模块，不构成新的 workflow_state。
+
+它负责：
+- 从 closed run 中提炼可复用经验
+- 定义 episodic / semantic / procedural / regression 四类 memory
+- 为 Context Controller 提供可注入摘要
+- 标记 memory 的来源、时效性、置信度与废弃条件
+- 在记忆与当前证据冲突时触发记录与治理反审
+
+memory 不是证据本身。读取 memory 时必须输出：
+- `memory_uid`
+- `memory_type`
+- `source_run_uid`
+- `source_issue_uid`
+- `source_pointer`
+- `confidence`
+- `freshness`
+- `applicability`
+
+只有对应 run 已完成 Closing、关键结论已回读、来源 pointer 明确、置信度可说明时，才允许沉淀长期 memory。
+
+---
+
 # 六、Run Engine「运行引擎」
 
 Run Engine 负责本次问题处理的主流程，不负责长期回归治理。
+
+Run Engine 可以调用 Context Controller 与 Tool Contract Registry 辅助当前 step，但它们不单独代表新的 workflow_state。
 
 ## 6.1 Step Orchestrator「步骤编排器」
 
@@ -791,6 +891,34 @@ read rule → run rule → save evidence → write result → fail handoff
 - 关键接口一旦稳定，必须回收进正式模块规范
 - 周期性反审的是“规范缺口”，不是具体实例排障
 
+v4.2 之后，治理反审还应检查：
+- 上下文装配是否可回读
+- 工具调用是否引用 tool contract
+- memory 是否覆盖当前证据
+- runtime adapter 是否产出可回读 pointer
+
+---
+
+# 十七点五、Runtime Adapter Module「运行时适配器模块」
+
+Runtime Adapter 是运行环境适配层，不构成新的 workflow_state。
+
+它负责：
+- 暴露当前环境可用能力
+- 将 tool contract 映射到具体执行器
+- 统一 artifact / evidence pointer 格式
+- 抽象文件、命令、浏览器、数据库、日志、CI、部署与外部系统差异
+
+适配器类型包括：
+- File Adapter
+- Shell Adapter
+- Browser / UI Adapter
+- Data Adapter
+- Observability Adapter
+- CI / Release Adapter
+
+Runtime Adapter 必须输出可回读 pointer。它不得推进 workflow_state，不得绕过 Tool Contract Registry 执行高副作用动作。
+
 ---
 
 # 十八、v4 推荐目录结构
@@ -805,11 +933,14 @@ read rule → run rule → save evidence → write result → fail handoff
 
   02-controllers/
     execution-profile-controller.md
+    context-controller-module.md
+    tool-contract-registry.md
     rollback-router.md
     state-transition-guard.md
 
   03-record/
     record-and-evidence-module.md
+    memory-layer-module.md
     running-note-template.md
     step-snapshot-template.md
     checklist-template.md
@@ -836,6 +967,9 @@ read rule → run rule → save evidence → write result → fail handoff
   07-governance/
     governance-module.md
     version-index.md
+
+  08-runtime/
+    runtime-adapter-module.md
 ```
 
 ---
@@ -943,6 +1077,10 @@ read rule → run rule → save evidence → write result → fail handoff
 8. 回归执行器 fail 时必须 handoff，不得默认自动修复。
 9. primary record db 仍是最终事实来源。
 10. patch 不得长期替代正式模块规范。
+11. Context Controller 只装配上下文，不推进 workflow_state。
+12. Tool Contract Registry 只定义契约，不执行真实工具调用。
+13. Memory Layer 只能辅助决策，不得覆盖当前证据。
+14. Runtime Adapter 只适配运行环境，不改变 Harness 状态机。
 
 ---
 
@@ -952,6 +1090,8 @@ read rule → run rule → save evidence → write result → fail handoff
 先落地以下 4 个核心模块：
 - Kernel Module
 - Execution Profile Controller
+- Context Controller Module
+- Tool Contract Registry
 - Record & Evidence Module
 - Run Engine / Step Orchestrator
 
@@ -971,7 +1111,10 @@ read rule → run rule → save evidence → write result → fail handoff
 - Regression Executor Module
 
 ## Phase 4「阶段四」
-补齐 Governance Module 与规范反审 Cron。
+补齐：
+- Memory Layer Module
+- Runtime Adapter Module
+- Governance Module 与规范反审 Cron
 
 ---
 
@@ -981,8 +1124,11 @@ Harness v4 不再是“只能顺序阅读的一组步骤文档”，而是一套
 
 - 有统一内核口径
 - 有执行档位控制
+- 有上下文装配与工具契约
 - 有横切记录模块
+- 有长期记忆分层
 - 有可装配运行引擎
+- 有运行环境适配层
 - 有闭环收束模块
 - 有长期回归能力
 - 有治理与反审能力

@@ -133,8 +133,123 @@
 - record_gate_bypass_checked:
 - regression_asset_executor_checked:
 - narrative_db_consistency_checked:
+- context_assembly_checked:
+- tool_contract_checked:
+- memory_layer_checked:
+- runtime_adapter_checked:
 - spec_gap:
+- context_gap:
+- tool_contract_gap:
+- memory_gap:
+- runtime_adapter_gap:
 - recommended_version:
 - recommended_patch_target:
 - readback_status:
+```
+
+---
+
+## 八、Context Assembly Snapshot「上下文装配快照」模板
+
+```md
+## Context Assembly Snapshot
+- run_uid:
+- issue_uid:
+- assembly_mode:
+- workflow_state:
+- module_name:
+- module_mode:
+- objective:
+- injected_context:
+- pointer_only_context:
+- excluded_context:
+- stale_or_tentative_items:
+- memory_conflicts:
+- context_gate_result:
+- readback_status:
+```
+
+---
+
+## 九、Tool Contract「工具契约」模板
+
+```md
+## Tool Contract
+- tool_uid:
+- tool_name:
+- tool_type:
+- owner_module:
+- input_schema:
+- output_schema:
+- side_effect_level:
+- timeout_policy:
+- retry_policy:
+- failure_modes:
+- rollback_hint:
+- evidence_output:
+- artifact_output:
+- readback_method:
+```
+
+---
+
+## 十、Tool Call Snapshot「工具调用快照」模板
+
+```md
+## Tool Call Snapshot
+- run_uid:
+- issue_uid:
+- workflow_state:
+- module_name:
+- module_mode:
+- tool_uid:
+- tool_name:
+- input_summary:
+- output_summary:
+- side_effect_level:
+- artifact_or_log_pointer:
+- evidence_pointer:
+- failure_type:
+- retry_count:
+- decision:
+- readback_status:
+```
+
+---
+
+## 十一、Memory Entry「记忆条目」模板
+
+```md
+## Memory Entry
+- memory_uid:
+- memory_type:
+- status:
+- source_run_uid:
+- source_issue_uid:
+- source_pointer:
+- summary:
+- applicability:
+- confidence:
+- freshness:
+- invalidation_condition:
+- owner:
+- created_at:
+- updated_at:
+```
+
+---
+
+## 十二、Runtime Adapter Capability「运行适配器能力」模板
+
+```md
+## Runtime Adapter Capability
+- adapter_uid:
+- adapter_name:
+- adapter_type:
+- supported_tool_types:
+- pointer_scheme:
+- artifact_root:
+- environment_scope:
+- failure_surface:
+- readback_method:
 ```

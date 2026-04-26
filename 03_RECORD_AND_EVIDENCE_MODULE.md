@@ -12,10 +12,14 @@
 所有 Step Module「步骤模块」与 standalone module call「独立模块调用」结束时，都必须经过 Record Gate「记录出口守卫」。
 
 这同样适用于：
+- Context Controller Module
+- Tool Contract Registry / Tool Call
 - Development Module「开发模块」
 - Installation Module「安装模块」
 - Deployment Module「部署模块」
 - Debug Module「调试模块」
+- Memory Layer Module
+- Runtime Adapter Module
 
 ---
 
@@ -123,6 +127,16 @@
 - `risk_note`
 - `evidence_pointer`
 - `artifact_or_log_pointer`
+
+### 5.2 context / tool / memory / adapter record「横切模块记录」附加规则
+当调用 Context Controller / Tool Contract Registry / Memory Layer / Runtime Adapter 时，应额外记录：
+- `module_name`
+- `assembly_mode` 或 `module_mode`
+- `tool_uid` / `adapter_uid` / `memory_uid`，如适用
+- `pointer_only_context`，如适用
+- `artifact_or_log_pointer`
+- `evidence_pointer`
+- `readback_status`
 
 ---
 
