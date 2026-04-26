@@ -36,6 +36,7 @@
 - [ ] 风险已评估
 - [ ] 证据采集路径已确定
 - [ ] 当前步输出已写入 running note
+- [ ] 人类可读镜像已写入或记录补写计划（L2 / L3）
 - [ ] 当前步结果已回读验证
 - [ ] 退出条件已满足
 - [ ] 回退条件已明确
@@ -52,6 +53,7 @@
 - action_summary:
 - key_evidence:
 - evidence_pointer:
+- human_readable_mirror_path:
 - decision:
 - next_or_rollback:
 - readback_status:
@@ -71,6 +73,7 @@
 - key_evidence:
 - evidence_pointer:
 - artifact_or_log_pointer:
+- human_readable_mirror_path:
 - risk_note:
 - decision:
 - next_or_rollback:
@@ -89,6 +92,7 @@
 - lifecycle_state:
 - primary_record_db:
 - narrative_path:
+- human_readable_mirror_path:
 - rule_required:
 - rule_reason:
 - rule_location:

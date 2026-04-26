@@ -38,6 +38,11 @@ Closing Module 不负责：
 2. running note / narrative「主过程文档 / 叙事文档」
 3. regression / monitoring assets「回归 / 监控资产」，如适用
 
+同时应维护一份 human-readable mirror「人类可读镜像」：
+- 默认落点：`/Users/laier/Documents/obsidian/Laier/00-AI/项目/`
+- 用途：方便人工快速查看当前项目、问题与闭环摘要
+- 约束：镜像不替代以上三层正式落点，也不作为 evidence pointer 的唯一来源
+
 ---
 
 ## 三、闭环判定
@@ -47,12 +52,14 @@ Closing Module 不负责：
 - running note 已完成收束
 - 有可追踪的结构化记录
 - 已显式评估是否需要生成 regression rule
+- 已写入或记录 human-readable mirror 的补写计划
 
 ### 3.2 L3 完整闭环
 必须全部满足：
 - 主记录已写入
 - narrative 已写入
 - 三处落点均已回读验证
+- human-readable mirror 已写入，并记录路径
 - 关闭输出已生成
 - lifecycle_state 已可标记为 `closed`
 
@@ -96,6 +103,7 @@ Closing Module 必须触发规则资产交付，并等待以下结果返回：
 闭环输出至少包含：
 - 主记录库路径
 - 主过程文档路径
+- 人类可读镜像路径
 - 当前 workflow_state
 - lifecycle_state
 - `rule_required`

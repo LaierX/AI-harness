@@ -23,7 +23,7 @@
 
 ---
 
-## 二、四个子模块
+## 二、五个子模块
 
 ### 2.1 Plan Writer「计划写入器」
 负责写入：
@@ -72,6 +72,22 @@
 - install log「安装日志」
 - deploy log「部署日志」
 - trace / dump / probe output「链路 / 转储 / 探针输出」
+
+### 2.5 Human-readable Mirror Writer「人类可读镜像写入器」
+负责在 Obsidian 项目目录额外维护一份人类可读记录，方便人工查看。
+
+默认镜像目录：
+
+```text
+/Users/laier/Documents/obsidian/Laier/00-AI/项目/
+```
+
+要求：
+- 该镜像是阅读副本，不替代 primary record db、running note 或 evidence pointer
+- L2 / L3 run 进入 closing 前，应写入或更新一份简洁中文摘要
+- 摘要至少包含 `run_uid`、`issue_uid`、目标、当前状态、关键结论、证据入口与下一步
+- 若镜像写入失败，不得伪装为 Record Gate 已完整通过；必须记录失败原因与补写计划
+- 镜像文件路径应写入 running note 或 closing summary 的 `human_readable_mirror_path`
 
 ---
 
