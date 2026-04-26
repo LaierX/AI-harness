@@ -84,6 +84,7 @@
 
 要求：
 - 该镜像是阅读副本，不替代 primary record db、running note 或 evidence pointer
+- 人类可读镜像必须默认使用中文；除非用户明确要求其他语言，不得写成英文摘要
 - L2 / L3 run 进入 closing 前，应写入或更新一份简洁中文摘要
 - 摘要至少包含 `run_uid`、`issue_uid`、目标、当前状态、关键结论、证据入口与下一步
 - 若镜像写入失败，不得伪装为 Record Gate 已完整通过；必须记录失败原因与补写计划

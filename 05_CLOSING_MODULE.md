@@ -41,6 +41,7 @@ Closing Module 不负责：
 同时应维护一份 human-readable mirror「人类可读镜像」：
 - 默认落点：`/Users/laier/Documents/obsidian/Laier/00-AI/项目/`
 - 用途：方便人工快速查看当前项目、问题与闭环摘要
+- 语言：默认必须使用中文，除非用户明确要求其他语言
 - 约束：镜像不替代以上三层正式落点，也不作为 evidence pointer 的唯一来源
 
 ---

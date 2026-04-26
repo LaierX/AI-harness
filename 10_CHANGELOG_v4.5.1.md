@@ -15,7 +15,7 @@
 - `04A_OBSERVING_MODULES.md`：在 Bootstrap 原子序列中加入 issue matching，普通 run 启动时必须先尝试复用 issue。
 - `02_EXECUTION_PROFILE_CONTROLLER.md`：补充 L1 → L2、L2 → L3 升级触发、禁止降级条件与中途升级补记要求。
 - `08_GOVERNANCE_MODULE.md`：将正式治理反审从建议性流程强化为必须执行，并新增 L3 阻断条件。
-- `03_RECORD_AND_EVIDENCE_MODULE.md`：新增 human-readable mirror writer，要求在 Obsidian 项目目录维护人类可读镜像记录。
+- `03_RECORD_AND_EVIDENCE_MODULE.md`：新增 human-readable mirror writer，要求在 Obsidian 项目目录维护中文人类可读镜像记录。
 - `05_CLOSING_MODULE.md`：将 human-readable mirror 纳入 Closing 输出与 L2 / L3 闭环判定。
 - `09_TEMPLATES.md`：在 step、capability 与 closing 模板中增加 `human_readable_mirror_path`。
 - `12_SCHEMAS_MODULE.md`：明确每个非公共 schema 必须有 valid example，并要求 schema 变更同步更新 fixture。
@@ -28,5 +28,5 @@
 - `run_uid` 每次 run 新建；`issue_uid` 必须先匹配复用，未命中或有歧义时才新建或暂停复核。
 - execution profile 可以升级，但升级必须补记，执行后不得无记录降级。
 - schema valid examples 是治理资产；缺失或无法校验会阻断 L3 完整闭环。
-- 人类可读镜像是查看便利副本，不替代 primary record、narrative 或 evidence pointer。
+- 人类可读镜像默认必须使用中文，是查看便利副本，不替代 primary record、narrative 或 evidence pointer。
 - `00_INDEX.md` 仍是唯一执行入口。
